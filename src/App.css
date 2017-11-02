@@ -1,0 +1,32 @@
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.App {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.inner-container {
+  background: #F1F1F1;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  float: left;
+  width: 100%;
+}
+
+.inner-container:first-child {
+  padding: 1rem;
+}
