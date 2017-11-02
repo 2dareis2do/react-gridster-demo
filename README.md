@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
-## Getting started
+# React Flux Demo
 
-### `npm start` doesn’t detect changes
+## Demo
+
+You [can view a demo here](http://dev.danlobo.co.uk/devproto/react-gridster-demo/build/).
