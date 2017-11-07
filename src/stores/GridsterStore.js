@@ -38,6 +38,33 @@ class GridsterStoreClass extends EventEmitter {
   }
 
 }
+function dijkstra() {
+  // Assign to every node a tentative distance value: set it to zero for our initial node and to infinity for all other nodes.
+  // Set the initial node as current. Mark all other nodes unvisited. Create a set of all the unvisited nodes called the unvisited set.
+  // For the current node, consider all of its neighbors and calculate their tentative distances. Compare the newly calculated tentative distance to the current assigned value and assign the smaller one. For example, if the current node A is marked with a distance of 6, and the edge connecting it with a neighbor B has length 2, then the distance to B (through A) will be 6 + 2 = 8. If B was previously marked with a distance greater than 8 then change it to 8. Otherwise, keep the current value.
+
+
+}
+
+function conpareDistances(current, unvisited) {
+  // console.log('current[0].x)', current[0].x);
+  // console.log('current[0].y', current[0].y);
+  // console.log('unvisited.length', unvisited.length);
+
+  //iterate over neighbours  and calculate distances 
+  isTop(current, unvisited);
+  isRight(current, unvisited);
+  isBottom(current, unvisited);
+  isLeft(current, unvisited);
+
+  // figure out value for each - which is shorter?
+
+  // so we are looking at neighbours
+  // 
+  let neigbours = unvisited.filter(neighbour => neighbour.distance !== Infinity )
+  console.log('neigbours', neigbours);
+
+}
 
 function xcoord(number) {
   return ( 1 + ((number%_store.columns)));
@@ -47,14 +74,62 @@ function ycoord(number) {
   return ( 1 + parseInt(number/_store.columns, 10));
 }
 
+function isTop(current, unvisited) {
+  unvisited.forEach(function(element, i) {
+    if(element.x === current[0].x && element.y + 1 === current[0].y ){
+      console.log('element.id top', element);
+      if(element.distance === Infinity) {
+        element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y - 1};
+      }
+    }
+  })
+}
 
-/* increment */
+function isRight(current, unvisited) {
+  unvisited.forEach(function(element, i) {
+    if(element.x === current[0].x + 1 && element.y === current[0].y ){
+      console.log('element.id right', element);
+      if(element.distance === Infinity) {
+        element.distance = {'x': current[0].distance.x + 1, 'y': current[0].distance.y};
+      }
+    }
+  })
+}
+
+function isBottom(current, unvisited) {
+  unvisited.forEach(function(element, i) {
+    if(element.x === current[0].x && element.y - 1 === current[0].y ){
+      console.log('element.id bottom', element);
+      if(element.distance === Infinity) {
+        element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y + 1};
+      }
+    }
+  })
+}
+
+function isLeft(current, unvisited) {
+  unvisited.forEach(function(element, i) {
+    if(element.x === current[0].x - 1 && element.y === current[0].y ){
+      console.log('element.id left', element);
+      if(element.distance === Infinity) {
+        element.distance = {'x': current[0].distance.x - 1, 'y': current[0].distance.y};
+      }
+    }
+  })
+}
+
+/*
+  increments '_store.selected.x' and either increments or decrements '_store.selected.y'
+  relative to _store.start.x and _store.start.y
+  does not show relative to selected cell !
+*/
 function pathCount(array) {
 
   _store.selected.x = 0;
   _store.selected.y = 0;
 
   if (array.length > 0) {
+    // clone array
     var copy = array.map(a => {return {...a}})
 
     array.forEach(function(element, i){
@@ -187,7 +262,7 @@ AppDispatcher.register((payload) => {
       let newCells = [];
 
       for(let i=0;i<total;i++){
-        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false});
+        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'distance': Infinity, 'visited': "unvisited"});
       }
 
       _store.grid = newCells;
@@ -247,7 +322,10 @@ AppDispatcher.register((payload) => {
       let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
 
       _store.grid[startIndex].clicked = "start";
+      _store.grid[startIndex].distance = {'x':0, 'y': 0};
+      _store.grid[startIndex].visited = "current";
 
+      console.log('_store.grid[startIndex]', _store.grid[startIndex]);
       GridsterStore.emit(CHANGE_EVENT);
     break;
 
@@ -265,8 +343,19 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.SHORT_PATH:
 
+      // shortfilter marks all clicked items
+      // this is initially the same as unvisited items + end item
       let shortFilter = _store.grid.filter((obj => obj.clicked === "true"));
+      //clone
+      let unVisited = shortFilter.map(a => {return {...a}});
 
+      console.log('shortFilter', shortFilter);
+      console.log('unVisited', unVisited);
+      //check current node 
+      let currentNode = _store.grid.filter((obj => obj.visited === "current"));
+      console.log('currentNode', currentNode);
+      //compare distances 
+      conpareDistances(currentNode, unVisited);
       calcPath(shortFilter);
 
 
