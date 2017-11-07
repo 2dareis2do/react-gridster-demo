@@ -20,6 +20,9 @@ let _store = {
   selected: {'y': 0, 'x': 0}
 };
 
+
+console.log('_store', _store);
+
 // Define the public event listeners and getters that
 // the views will use to listen for changes and retrieve
 // the store
@@ -47,11 +50,24 @@ function dijkstra() {
 }
 
 function conpareDistances(current, unvisited) {
+  console.log('unvisited', unvisited);
   // console.log('current[0].x)', current[0].x);
   // console.log('current[0].y', current[0].y);
   // console.log('unvisited.length', unvisited.length);
 
   //iterate over neighbours  and calculate distances 
+
+  //step 3 inplement while loop
+
+  // _store.grid.forEach(function(element, i) {
+  //   if(element.clicked === "end" && element.visited === "unvisited") {
+  //     console.log('connected!!!!');
+  //   }
+  //   else {
+  //     console.log('not connected!!!!');
+  //   }
+  // })
+
   isTop(current, unvisited);
   isRight(current, unvisited);
   isBottom(current, unvisited);
@@ -61,8 +77,73 @@ function conpareDistances(current, unvisited) {
 
   // so we are looking at neighbours
   // 
-  let neigbours = unvisited.filter(neighbour => neighbour.distance !== Infinity )
-  console.log('neigbours', neigbours);
+}
+
+function removeCurrent(array) {
+  array.forEach(function(element, i) {
+    if(element.visited === "current") {
+      element.visited = "visited";
+    }
+  })
+}
+
+function isDestinationVisited(array) {
+    array.forEach(function(element, i) {
+      if(element.clicked === "end" && element.visited === "visited") {
+        console.log('The ENd');
+        return true;
+      } else {
+        return false;
+      }
+  })
+
+}
+  function conpareDistancesNext(current, unvisited) {
+
+  let neighbours = unvisited.filter(neighbour => neighbour.distance !== Infinity )
+  console.log('neighbours', neighbours);
+  neighbours.forEach(function(element, i) {
+    // console.log('_store.end.x  - _store.start.x', _store.end.x - _store.start.x);
+    // console.log('_store.end.y  - _store.start.x', _store.end.y - _store.start.y);
+
+    // console.log('element.distance.x', element.distance.x);
+    // console.log('element.distance.y', element.distance.y);
+
+    // console.log('end - element.distance.x', _store.end.x - _store.start.x - element.distance.x);
+    // console.log('end - element.distance.y', _store.end.y - _store.start.y - element.distance.y);
+    console.log('x + y ', Math.abs(_store.end.x - _store.start.x - element.distance.x) + Math.abs(_store.end.y - _store.start.y - element.distance.y) )
+  });
+
+
+
+  // unvisited.forEach(function(element, i) {
+  //   if(element.visited === "current") {
+  //     console.log('element.visited', element.visited)
+  //     unvisited.splice(i, 1);
+  //   }
+  // })
+  console.log('unvisited 2 ', unvisited);
+
+//If the destination node has been marked visited (when planning a route between two specific nodes) or 
+//if the smallest tentative distance among the nodes in the unvisited set is infinity (when planning a complete traversal; occurs when there is no connection between the initial node and remaining unvisited nodes), then stop. The algorithm has finished.
+
+  _store.grid.forEach(function(element, i) {
+    if(element.clicked === "end" && element.visited === "visited") {
+      console.log('connected!!!!');
+    }
+  })
+
+  //Otherwise, select the unvisited node that is marked with the smallest tentative distance, set it as the new "current node", and go back to step 3.
+
+  neighbours.forEach(function(element, i) {
+    console.log('element', element);
+      element.visited = "current";
+  }) 
+
+    isTop(current, unvisited);
+  isRight(current, unvisited);
+  isBottom(current, unvisited);
+  isLeft(current, unvisited);
 
 }
 
@@ -76,6 +157,10 @@ function ycoord(number) {
 
 function isTop(current, unvisited) {
   unvisited.forEach(function(element, i) {
+
+          console.log('current.id top', current);
+          console.log('current.id x top', current[0].x);
+
     if(element.x === current[0].x && element.y + 1 === current[0].y ){
       console.log('element.id top', element);
       if(element.distance === Infinity) {
@@ -180,13 +265,24 @@ function pathCount(array) {
   }
 
 }
-//returns value if path is connected
-//sets state/elment path to be either connected or null
+
+/*
+  returns value if path is connected
+  sets state/elment path to be either connected or null
+*/
+
 function calcPath(object){
 
+  // paths = array of possible paths to top left bottom end
   let paths = [];
   if (object.length > 0) {
+
+    // iterates over object and updated _store selected
     pathCount(object);
+
+    // calculate values for possible valid paths
+    // valed path is one that goes from start to end
+    // one for each end point - may revise
 
     //calculate start point to left
     paths.push({'id':'centertoleft', 'x': (_store.end.x -1) - _store.start.x , 'y': _store.end.y - _store.start.y});
@@ -201,6 +297,10 @@ function calcPath(object){
       paths.push({'id':'bottom', 'x':  _store.end.x - _store.start.x, 'y': (_store.end.y + 1) - _store.start.y});
 
     }
+
+    // for each valid path
+    // see if there is a match from selected paths 
+    // if so change element.path state to "connected"
 
     // console.log('paths', paths);
     let count = 0;
@@ -345,17 +445,61 @@ AppDispatcher.register((payload) => {
 
       // shortfilter marks all clicked items
       // this is initially the same as unvisited items + end item
-      let shortFilter = _store.grid.filter((obj => obj.clicked === "true"));
-      //clone
-      let unVisited = shortFilter.map(a => {return {...a}});
+      let shortFilter = _store.grid.filter((obj => obj.clicked === "true" ));
+      //clone add
+      let unVisited = _store.grid.filter((obj => (obj.clicked === "true" && obj.visited !== "visited" && obj.visited !== "current"  ) ));
+      // console.log('unVisitedprepre ', unVisited);
 
-      console.log('shortFilter', shortFilter);
-      console.log('unVisited', unVisited);
+      // current starts at statrt
+      let current = _store.grid.filter((obj => (obj.visited === "current") ));
+      console.log('current', current);
+      if (current.length === 0 ) {
+        console.log('current undefined - need to define')
+        // if more than one item not infinity calculate shortest path
+        //from items not marked as infinity or visited
+        // or where distance has value  
+        console.log('unVisited',unVisited);
+        unVisited.forEach(function(element, i){
+          if (element.distance !== Infinity) {
+                        console.log('c element', element);
+
+            console.log('current.visited', current.visited);
+            current = [element];
+
+
+            unVisited.splice(i,1);
+
+          }
+        })
+      }
+      current[0].visited = "current";
+      console.log('current element pre', current);
+
+      let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
+
+      if(end === undefined) {
+        console.log('end now');
+      }
+      console.log('un visited before', unVisited);
+      unVisited.push(...current);
+            console.log('un visited current', unVisited);
+
+      unVisited.push(...end);
+            console.log('un visited end', unVisited);
+
+      // let unVisitedClone = unVisited.map(a => {return {...a}});
+
+      // console.log('shortFilter', shortFilter);
+      // console.log('unVisitedpre ', unVisited);
       //check current node 
-      let currentNode = _store.grid.filter((obj => obj.visited === "current"));
-      console.log('currentNode', currentNode);
+      // let currentNode = _store.grid.filter((obj => obj.visited === "current"));
+      // console.log('currentNode', currentNode);
       //compare distances 
-      conpareDistances(currentNode, unVisited);
+      conpareDistances(current, unVisited);
+      removeCurrent(unVisited);
+      isDestinationVisited(unVisited);
+      console.log('unvisted 3', unVisited);
+
       calcPath(shortFilter);
 
 
