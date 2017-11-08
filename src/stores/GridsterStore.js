@@ -49,6 +49,14 @@ function dijkstra() {
 
 }
 
+function connectPath(array) {
+  array.forEach((element, i) => {
+    element.path = "connected";
+  })
+}
+
+ 
+
 function conpareDistances(current, unvisited) {
   console.log('unvisited', unvisited);
   // console.log('current[0].x)', current[0].x);
@@ -87,14 +95,50 @@ function removeCurrent(array) {
   })
 }
 
+function markPath() {
+  let notInfinity = [];
+  _store.grid.forEach(function(element, i){
+    if(element.distance !== Infinity) {
+      notInfinity.push(element);
+    }
+  })
+   // console.log('notInfinity', notInfinity);
+  connectPath(notInfinity);
+}
+
 function isDestinationVisited(array) {
+  console.log('isdestination called')
+  //compare element to see if it is eiter left right or top of end square
     array.forEach(function(element, i) {
-      if(element.clicked === "end" && element.visited === "visited") {
-        console.log('The ENd');
-        return true;
-      } else {
-        return false;
-      }
+      console.log('is dest', element.distance.x);
+      if(element.distance.x + 1 === (_store.end.x - _store.start.x) &&
+        element.distance.y === (_store.end.y - _store.start.y)) {
+        console.log('The ENd left of');
+        markPath();
+
+      } 
+
+      if(element.distance.x === (_store.end.x - _store.start.x) &&
+        element.distance.y -1 === (_store.end.y - _store.start.y)) {
+        console.log('The ENd bottom of');
+      //get path of all clicked items || itesm that are not set to infinity
+        // let notInfinity = [];
+        // _store.grid.forEach(function(element, i){
+        //   if(element.distance !== Infinity) {
+        //     notInfinity.push(element);
+        //   }
+        // })
+        //  // console.log('notInfinity', notInfinity);
+        // connectPath(notInfinity);
+        markPath();
+
+      } 
+
+      if(element.distance.x === (_store.end.x - _store.start.x) && element.distance.y +1 === (_store.end.y - _store.start.y)) {
+        console.log('The ENd top of');
+        markPath();
+
+      } 
   })
 
 }
@@ -138,7 +182,7 @@ function isDestinationVisited(array) {
   neighbours.forEach(function(element, i) {
     console.log('element', element);
       element.visited = "current";
-  }) 
+  })
 
     isTop(current, unvisited);
   isRight(current, unvisited);
@@ -156,51 +200,58 @@ function ycoord(number) {
 }
 
 function isTop(current, unvisited) {
-  unvisited.forEach(function(element, i) {
-
-          console.log('current.id top', current);
-          console.log('current.id x top', current[0].x);
-
-    if(element.x === current[0].x && element.y + 1 === current[0].y ){
-      console.log('element.id top', element);
-      if(element.distance === Infinity) {
-        element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y - 1};
+  if (current.length !== 0) {
+    unvisited.forEach(function(element, i) {
+      if(element.x === current[0].x && element.y + 1 === current[0].y ){
+        console.log('element.id top', element);
+        if(element.distance === Infinity) {
+          element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y - 1};
+          isDestinationVisited(unvisited);
+        }
       }
-    }
-  })
+    })
+  }
 }
 
 function isRight(current, unvisited) {
-  unvisited.forEach(function(element, i) {
-    if(element.x === current[0].x + 1 && element.y === current[0].y ){
-      console.log('element.id right', element);
-      if(element.distance === Infinity) {
-        element.distance = {'x': current[0].distance.x + 1, 'y': current[0].distance.y};
+  if (current.length !== 0) {
+    unvisited.forEach(function(element, i) {
+      if(element.x === current[0].x + 1 && element.y === current[0].y ){
+        console.log('element.id right', element);
+        if(element.distance === Infinity) {
+          element.distance = {'x': current[0].distance.x + 1, 'y': current[0].distance.y};
+          isDestinationVisited(unvisited);
+        }
       }
-    }
-  })
+    })
+  }
 }
 
 function isBottom(current, unvisited) {
-  unvisited.forEach(function(element, i) {
-    if(element.x === current[0].x && element.y - 1 === current[0].y ){
-      console.log('element.id bottom', element);
-      if(element.distance === Infinity) {
-        element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y + 1};
+  if (current.length !== 0) {
+    unvisited.forEach(function(element, i) {
+      if(element.x === current[0].x && element.y - 1 === current[0].y ){
+        console.log('element.id bottom', element);
+        if(element.distance === Infinity) {
+          element.distance = {'x': current[0].distance.x, 'y': current[0].distance.y + 1};
+          isDestinationVisited(unvisited);
+        }
       }
-    }
-  })
+    })
+  }
 }
 
 function isLeft(current, unvisited) {
-  unvisited.forEach(function(element, i) {
-    if(element.x === current[0].x - 1 && element.y === current[0].y ){
-      console.log('element.id left', element);
-      if(element.distance === Infinity) {
-        element.distance = {'x': current[0].distance.x - 1, 'y': current[0].distance.y};
+  if (current.length !== 0) {
+    unvisited.forEach(function(element, i) {
+      if(element.x === current[0].x - 1 && element.y === current[0].y ){
+        console.log('element.id left', element);
+        if(element.distance === Infinity) {
+          element.distance = {'x': current[0].distance.x - 1, 'y': current[0].distance.y};
+        }
       }
-    }
-  })
+    })
+  }
 }
 
 /*
@@ -302,7 +353,6 @@ function calcPath(object){
     // see if there is a match from selected paths 
     // if so change element.path state to "connected"
 
-    // console.log('paths', paths);
     let count = 0;
     paths.forEach(function(element, i){
       //restricts to either rows or columns
@@ -310,7 +360,7 @@ function calcPath(object){
         count++;
         object.forEach((element, i) => {
           element.path = "connected";
-      })
+        })
       }
     });
 
@@ -461,31 +511,32 @@ AppDispatcher.register((payload) => {
         console.log('unVisited',unVisited);
         unVisited.forEach(function(element, i){
           if (element.distance !== Infinity) {
-                        console.log('c element', element);
+            //             console.log('c element', element);
 
-            console.log('current.visited', current.visited);
+            // console.log('current.visited', current.visited);
             current = [element];
-
-
+            // remove item from unVistited as we add it later
             unVisited.splice(i,1);
 
           }
         })
       }
-      current[0].visited = "current";
-      console.log('current element pre', current);
+      if (current.length > 0 ) {
+        current[0].visited = "current";
+      }
+      // console.log('current element pre', current);
 
       let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
-
-      if(end === undefined) {
+      console.log('end length', end.length);
+      if(end.length === 0) {
         console.log('end now');
       }
-      console.log('un visited before', unVisited);
+      // console.log('un visited before', unVisited);
       unVisited.push(...current);
-            console.log('un visited current', unVisited);
+            // console.log('un visited current', unVisited);
 
       unVisited.push(...end);
-            console.log('un visited end', unVisited);
+            // console.log('un visited end', unVisited);
 
       // let unVisitedClone = unVisited.map(a => {return {...a}});
 
@@ -499,8 +550,8 @@ AppDispatcher.register((payload) => {
       removeCurrent(unVisited);
       isDestinationVisited(unVisited);
       console.log('unvisted 3', unVisited);
-
-      calcPath(shortFilter);
+      //old way
+      // calcPath(shortFilter);
 
 
       GridsterStore.emit(CHANGE_EVENT);
