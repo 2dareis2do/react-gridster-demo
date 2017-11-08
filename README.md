@@ -12,6 +12,9 @@ To generate the grid, hit the generate button.
 
 Starting from the left try to connect the start and end cells by clicking or touching on adjacent horizontal or vertical cells.
 
+## Todo
+Implement priority queue to iterate through available paths heap and show alternative routes using A* alogorith or similar
+
 ## Demo
 
 You [can view a demo here](http://dev.danlobo.co.uk/devproto/react-gridster-demo/build/).
