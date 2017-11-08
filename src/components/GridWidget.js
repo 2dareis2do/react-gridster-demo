@@ -15,6 +15,20 @@ const spanStyle = {
   marginRight: '1rem'
 }
 
+function inputValidation(value) {
+  //check for number input
+  if(typeof value === 'number') {
+  //check value is <= || 20 > 0
+    if(value <= 20 && value > 0){
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 export default class GridWidget extends Component {
 
   constructor(props) {
@@ -44,15 +58,21 @@ export default class GridWidget extends Component {
   }
 
   _onChangeRows(event) {
-    this.setState({
-      rows: event.target.value
-    });
+    let value = parseInt(event.target.value, 10);
+    if (inputValidation(value)) {
+      this.setState({
+        rows: value
+      });
+   } 
   }
 
   _onChangeCols(event) {
+    let value = parseInt(event.target.value, 10);
+    if (inputValidation(value)) {
     this.setState({
-      columns: event.target.value
+      columns: value
     });
+   }
   }
 
   _onGenerateGrid() {

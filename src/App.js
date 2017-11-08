@@ -21,7 +21,7 @@ export default class App extends Component {
           To generate the grid, hit the <i>generate</i> button.
         </p>
         <p>
-          Try to connect the start and end cells by clicking or touching them.
+          Starting from the left try to connect the start and end cells by clicking or touching on adjacent horizontal or vertical cells.
         </p>
         <GridWidget />
       </div>

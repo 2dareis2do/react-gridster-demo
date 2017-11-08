@@ -5,7 +5,8 @@ const inputStyle = {
   marginLeft: '.4rem',
   borderRadius: '.4rem',
   border: 'solid 1px #ccc',
-  padding: '.4rem'
+  padding: '.4rem',
+  maxWidth: '3rem'
 }
 
 export default class Input extends Component {
@@ -15,7 +16,7 @@ export default class Input extends Component {
       <label>
         {this.props.name}
         <input style={inputStyle}
-          type="text"
+          type="number"
           name={this.props.name}
           value={this.props.value}
           onChange={this.props.onchange}
