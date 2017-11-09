@@ -57,6 +57,7 @@ function removeCurrent(array) {
 }
 
 function markPath() {
+  console.log('mark path');
   let notInfinity = [];
   _store.grid.forEach(function(element, i){
     if(element.distance !== Infinity) {
@@ -66,21 +67,145 @@ function markPath() {
   connectPath(notInfinity);
 }
 
+function checkStart(elementX, elementY, startX, startY) {
+  if(elementX === startX && elementY + 1 === startY ){
+    console.log('checkstart top start');
+    return true;
+  }
+  //right
+  if(elementX === startX + 1 && elementY === startY ){
+    console.log('checkstart right start');
+    return true;
+  }
+  //bottom
+  if(elementX === startX && elementY - 1 === startY ){
+    console.log('checkstart bottom start');
+    return true;
+  }
+  // left
+  if(elementX === startX - 1 && elementY === startY ){
+    console.log('checkstart left start');
+    return true;
+  }
+}
+
+function pathFinder() {
+  console.log('pathfinder');
+  //get end grid and assign 
+  let start = _store.grid.filter((obj => (obj.clicked === "start") ));
+
+console.log('start.x', start[0].x);
+console.log('start.y', start[0].y);
+  let end = _store.grid.filter((obj => (obj.clicked === "end") ));
+  console.log('end', end);
+  let counter = 0;
+
+ // let adjacentItems = clickedItems.filter((obj => (obj.x ===  && obj.counter > counter ) ));
+  let tempQ = [];
+
+  let match = false;
+
+
+while (match === false) {
+  // ideally these should not be here but they ar elinked to 
+  let clickedItems = _store.grid.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
+  let queue = _store.grid.filter((obj => (obj.counter === counter) ));
+  console.log('queue', queue);
+
+  console.log('clickedItems', clickedItems);
+  //function isTop(current, unvisited) {
+  queue.forEach(function(end, i) {
+    console.log('endy', end);
+    clickedItems.forEach(function(element, i) {
+      console.log('element', element);
+      console.log('end', end);
+
+      //top
+      if(element.x === end.x && element.y + 1 === end.y ){
+        element.counter = counter + 1;
+        tempQ.push(element);
+        console.log('element.id top', element);
+
+        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+          match = true;
+        }
+
+      }
+
+      //right
+      if(element.x === end.x + 1 && element.y === end.y ){
+        element.counter = counter + 1;
+        tempQ.push(element);
+        console.log('element.id right', element);
+
+        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+          match = true;
+        }
+      }
+
+      //bottom
+      if(element.x === end.x && element.y - 1 === end.y ){
+        element.counter = counter + 1;
+        tempQ.push(element);
+        console.log('element.id bottom', element);
+
+        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+          match = true;
+        }
+
+      }
+
+      //left
+      if(element.x === end.x - 1 && element.y === end.y ){
+        element.counter = counter + 1;
+        tempQ.push(element);
+        console.log('element.id left', element);
+
+        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+          match = true;
+        }
+      }
+
+
+
+    })
+  })
+
+  counter = counter + 1;
+  console.log('counter', counter);
+  console.log('match', match);
+  console.log('tempQ', tempQ);
+
+  if (counter > 20) {
+    match = true; 
+    console.log('end on 20')
+  } 
+
+  }
+
+}
+
 function isDestinationVisited(array) {
   //compare element to see if it is eiter left right or top of end square
     array.forEach(function(element, i) {
       if(element.distance.x + 1 === (_store.end.x - _store.start.x) &&
         element.distance.y === (_store.end.y - _store.start.y)) {
         markPath();
+        pathFinder();
+
       }
 
       if(element.distance.x === (_store.end.x - _store.start.x) &&
         element.distance.y -1 === (_store.end.y - _store.start.y)) {
         markPath();
+        pathFinder();
+
       }
 
       if(element.distance.x === (_store.end.x - _store.start.x) && element.distance.y +1 === (_store.end.y - _store.start.y)) {
         markPath();
+        pathFinder();
+
       }
   })
 
@@ -188,7 +313,7 @@ AppDispatcher.register((payload) => {
       let newCells = [];
 
       for(let i=0;i<total;i++){
-        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'distance': Infinity, 'visited': "unvisited"});
+        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'distance': Infinity, 'counter': Infinity, 'visited': "unvisited"});
       }
 
       _store.grid = newCells;
@@ -262,6 +387,7 @@ AppDispatcher.register((payload) => {
 
       let endIndex = _store.grid.findIndex((obj => obj.id === parseInt(endCell, 10)));
       _store.grid[endIndex].clicked = "end";
+      _store.grid[endIndex].counter = 0;
 
       GridsterStore.emit(CHANGE_EVENT);
     break;
@@ -274,8 +400,12 @@ AppDispatcher.register((payload) => {
 
       let unVisited = _store.grid.filter((obj => (obj.clicked === "true" && obj.visited !== "visited" && obj.visited !== "current"  ) ));
 
+
+      // let visited = _store.grid.filter((obj => (obj.visited === "visited") ));
+      // console.log('visited', visited);
       // current starts at start
       let current = _store.grid.filter((obj => (obj.visited === "current") ));
+      //else set current to to unvisted element that does not have distance set to infinity 
       if (current.length === 0 ) {
         unVisited.forEach(function(element, i){
           if (element.distance !== Infinity) {
@@ -288,12 +418,12 @@ AppDispatcher.register((payload) => {
         current[0].visited = "current";
       }
 
-      let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
+      // let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
 
       unVisited.push(...current);
 
-      unVisited.push(...end);
-
+      // unVisited.push(...end);
+      // console.log('unVisited', unVisited);
       conpareDistances(current, unVisited);
       removeCurrent(unVisited);
       isDestinationVisited(unVisited);
