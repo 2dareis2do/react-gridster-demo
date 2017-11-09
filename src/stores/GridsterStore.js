@@ -35,6 +35,7 @@ class GridsterStoreClass extends EventEmitter {
 
 }
 
+//paint path
 function connectPath(array) {
   array.forEach((element, i) => {
     element.path = "connected";
@@ -67,6 +68,7 @@ function markPath() {
   connectPath(notInfinity);
 }
 
+//checks if element is next to
 function checkStart(elementX, elementY, startX, startY) {
   if(elementX === startX && elementY + 1 === startY ){
     console.log('checkstart top start');
@@ -94,116 +96,443 @@ function pathFinder() {
   //get end grid and assign 
   let start = _store.grid.filter((obj => (obj.clicked === "start") ));
 
-console.log('start.x', start[0].x);
-console.log('start.y', start[0].y);
+// console.log('start.x', start[0].x);
+// console.log('start.y', start[0].y);
   let end = _store.grid.filter((obj => (obj.clicked === "end") ));
-  console.log('end', end);
+  // console.log('end', end);
   let counter = 0;
-
  // let adjacentItems = clickedItems.filter((obj => (obj.x ===  && obj.counter > counter ) ));
   let tempQ = [];
 
   let match = false;
+  let notFound = true;
 
-
-while (match === false) {
+  while (match === false) {
   // ideally these should not be here but they ar elinked to 
-  let clickedItems = _store.grid.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
-  let queue = _store.grid.filter((obj => (obj.counter === counter) ));
-  console.log('queue', queue);
+    let clickedItems = _store.grid.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
 
-  console.log('clickedItems', clickedItems);
-  //function isTop(current, unvisited) {
-  queue.forEach(function(end, i) {
-    console.log('endy', end);
-    clickedItems.forEach(function(element, i) {
-      console.log('element', element);
-      console.log('end', end);
+    let queue = _store.grid.filter((obj => (obj.counter === counter) ));
 
-      //top
-      if(element.x === end.x && element.y + 1 === end.y ){
-        element.counter = counter + 1;
-        tempQ.push(element);
-        console.log('element.id top', element);
+    console.log('clickedItems', clickedItems);
+    //function isTop(current, unvisited) {
+    queue.forEach(function(end, i) {
+      // console.log('endy', end);
+      clickedItems.forEach(function(element, i) {
+        // console.log('element', element);
+        // console.log('end', end);
 
-        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-          match = true;
+        //top
+        if(element.x === end.x && element.y + 1 === end.y ){
+          element.counter = counter + 1;
+          tempQ.push(element);
+          console.log('element.id top', element);
+
+          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+            notFound = false;
+            match = true;
+          }
+
         }
 
+        //right
+        if(element.x === end.x + 1 && element.y === end.y ){
+          element.counter = counter + 1;
+          tempQ.push(element);
+          console.log('element.id right', element);
+
+          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+            notFound = false;
+            match = true;
+          }
+        }
+
+        //bottom
+        if(element.x === end.x && element.y - 1 === end.y ){
+          element.counter = counter + 1;
+          tempQ.push(element);
+          console.log('element.id bottom', element);
+
+          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+            match = true;
+            notFound = false;
+          }
+
+        }
+
+        //left
+        if(element.x === end.x - 1 && element.y === end.y ){
+          element.counter = counter + 1;
+          tempQ.push(element);
+          console.log('element.id left', element);
+
+          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
+            match = true;
+            notFound = false;
+          }
+        }
+
+      })
+    })
+
+    counter = counter + 1;
+    console.log('counter', counter);
+    console.log('match', match);
+    // console.log('tempQ', tempQ);
+    console.log('queue', queue);
+    console.log('notFound', notFound);
+
+    if (counter > 20) {
+      match = true;
+      notFound = true;
+      console.log('end on 20 not found!!')
+      console.log('notfound > 20', notFound);
+
+    }
+
+  }
+
+  let recursion = true;
+  let shortestPath = [];
+
+
+  console.log('tempQ b4', tempQ);
+  let adjacentItem = [];
+ console.log('start', start);
+  start[0].counter = counter + 1;
+   console.log('start', start);
+
+  adjacentItem.push(...start)
+  console.log('adjacentItem', adjacentItem);
+  // tempQ.push(...start);
+
+  console.log('tempQ after', tempQ);
+  console.log('shortestPath', shortestPath);
+
+  // iterat though objects starting at counter
+  // while (recursion === true && counter > 0) {
+  //   //check  mactch first
+  //   if(match && notFound === false) {
+  //     // console.log('iterate through objects where counter === counter - create array - mark as path');
+
+  //     //get array of items and find items that are near start use temp
+  //     if(adjacentItem.length !== 0){
+
+  //       tempQ.forEach(function(element, i){
+
+  //         adjacentItem.forEach(function(item, j) {
+  //           // top
+  //          if(item.x === element.x && item.y === element.y - 1) {
+  //             console.log('top');
+  //                           console.log('top');
+
+  //             if(element.counter === counter) {
+  //                 console.log('top push');
+  //                 console.log('element', element);
+
+  //               tempRec.push(element);
+  //             }
+  //           }
+  //           //right
+  //          if(element.x - 1 === item.x && element.y == item.y) {
+  //             console.log('right');
+  //             if(element.counter === counter) {
+  //                                 console.log('right push');
+
+  //               tempRec.push(element);
+  //             }          
+  //           }
+
+  //           //bottom
+  //           if(element.x === item.x && element.y + 1  == item.y) {
+  //             console.log('bottom');
+  //             if(element.counter === counter) {
+  //                                                 console.log('bottom push');
+
+  //               tempRec.push(element);
+  //             }          
+  //           }
+  //           //left
+  //           if(element.x + 1 === item.x && element.y == item.y) {
+  //             console.log('left');
+  //             if(element.counter === counter) {
+  //                                                                 console.log('left push');
+
+  //               tempRec.push(element);
+  //             }
+  //           }
+  //         })
+
+  //       // )}
+  //       //check if element exists that matches couter add here
+  //       // if (element.counter === counter ) {
+  //       //   shortestPath.push(element);
+  //       //   if (tempQ.length > 0) {
+  //       //     console.log('tempQ[i]', tempQ[i]);
+  //       //     // console.log('tempQ[i] - 1', tempQ[i - 1 ]);
+  //       //     shortestPath.forEach(function(item, j) {
+  //       //       if(item.counter === counter) {
+  //       //          console.log('item sp ', item);
+
+  //       //       }
+  //       //     })
+
+  //       //   }
+  //         // console.log('need to check if top, right, left botton of any existing node with counter -1');
+  //         // shortestPath.forEach(function(item, j) {
+  //         //   if (item.counter === counter + 1) {
+  //         //     console.log('next to item', item.counter + 1);
+  //         //     console.log('next to item', item);
+
+  //         //     console.log('next to item x', item.x);
+  //         //     console.log('next to item y', item.y);
+  //         //     // if(shortestPath[j]).counter === shortestPath[j]).counter + 1 }
+  //         //   }
+  //         // })
+  //       // }
+  //     })
+  //   }
+
+  // }
+
+  //   counter = counter -1;
+  // }
+  //Now, start at S (7) and go to the nearby cell with the lowest number (unchecked cells cannot be moved to). The path traced is (1,3,7) -> (1,4,6) -> (1,5,5) -> (1,6,4) -> (1,7,3) -> (1,8,2) -> (2,8,1) -> (3,8,0). In the event that two numbers are equally low (for example, if S was at (2,5)), pick a random direction – the lengths are the same. The algorithm is now complete.
+
+  //goto start
+  //start is array object
+  //get start x, y
+  console.log('start', start);
+  let neighbours = [];
+  console.log('neighbours', neighbours);
+  //iterate over temp items
+    //  if temp item  is neighbour
+  // add to list of neighbours
+
+  // run in neighbours is 0 i.e. only on first start
+  while (recursion === true && counter > 0) {
+  if (neighbours.length === 0) {
+
+  tempQ.forEach(function(item, i){
+                // top
+     if(item.x === start[0].x && item.y === start[0].y - 1) {
+        console.log('top');
+                      console.log('top');
+
+        if(item.counter === counter) {
+            console.log('top push');
+            console.log('item', item);
+
+          neighbours.push(item);
+        }
       }
-
       //right
-      if(element.x === end.x + 1 && element.y === end.y ){
-        element.counter = counter + 1;
-        tempQ.push(element);
-        console.log('element.id right', element);
+     if(start[0].x - 1 === item.x && start[0].y === item.y) {
+        console.log('right');
+        if(item.counter === counter) {
+                            console.log('right push');
 
-        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-          match = true;
+          neighbours.push(item);
         }
       }
 
       //bottom
-      if(element.x === end.x && element.y - 1 === end.y ){
-        element.counter = counter + 1;
-        tempQ.push(element);
-        console.log('element.id bottom', element);
+      if(start[0].x === item.x && start[0].y + 1  === item.y) {
+        console.log('bottom');
+        if(item.counter === item) {
+                                            console.log('bottom push');
 
-        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-          match = true;
-        }
-
+          neighbours.push(item);
+        }          
       }
-
       //left
-      if(element.x === end.x - 1 && element.y === end.y ){
-        element.counter = counter + 1;
-        tempQ.push(element);
-        console.log('element.id left', element);
+      if(start[0].x + 1 === item.x && start[0].y === item.y) {
+        console.log('left');
+        if(item.counter === counter) {
+                                                            console.log('left push');
 
-        if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-          match = true;
+          neighbours.push(item);
         }
       }
-
-
 
     })
-  })
+    }
 
-  counter = counter + 1;
-  console.log('counter', counter);
-  console.log('match', match);
-  console.log('tempQ', tempQ);
+    console.log('neighbours after start', neighbours);
 
-  if (counter > 20) {
-    match = true; 
-    console.log('end on 20')
-  } 
+    let lowestNumber = Infinity;
+    //get neighboure 
+
+
+
+  //  for each neighbour take the loweset count ...
+  if(neighbours.length !== 0){
+    console.log('gt 1 !');
+    neighbours.forEach(function(cell, c){
+      // ige tneighbout with lowest value for counter
+      //check counter 
+      if (cell.counter < lowestNumber) {
+        lowestNumber = cell.counter;
+      }
+    })
 
   }
 
+//used to select cell from next round
+  let tempZ = [];
+ if(neighbours.length !== 0){
+    //take item with least count ....
+    neighbours.forEach(function(cell, c) {
+          console.log('shortest cell push');
+
+      if (cell.counter === lowestNumber) {
+        tempZ.push(cell);
+      }
+
+    })
+  }
+
+  // let newNeighBours = [];
+
+
+   tempQ.forEach(function(item, i){
+                // top
+     if(item.x === tempZ[0].x && item.y === tempZ[0].y - 1) {
+        console.log('top');
+                      console.log('top');
+
+        if(item.counter === counter) {
+            console.log('top tempZ push');
+            console.log('item tempZ', item);
+
+          neighbours.push(item);
+        }
+      }
+      //right
+     if(tempZ[0].x - 1 === item.x && tempZ[0].y === item.y) {
+        console.log('right');
+        if(item.counter === counter) {
+                            console.log('right tempZ push');
+
+          neighbours.push(item);
+        }
+      }
+
+      //bottom
+      if(tempZ[0].x === item.x && tempZ[0].y + 1  === item.y) {
+        console.log('bottom');
+        if(item.counter === item) {
+                                            console.log('bottom tempZ push');
+
+          neighbours.push(item);
+        }          
+      }
+      //left
+      if(tempZ[0].x + 1 === item.x && tempZ[0].y === item.y) {
+        console.log('left');
+        if(item.counter === counter) {
+                                                            console.log('left tempZ push');
+
+          neighbours.push(item);
+        }
+      }
+
+    })
+
+  // get next neighbour
+  // 
+
+  //...and return or save  if neighbour > 0 //part of while condition?
+  // from neighboure 
+  console.log('lowestNumber after', lowestNumber);
+
+
+
+  // if count = 1  add item and end
+
+
+    // console.log('tempRec after', tempRec);
+    // let tempRec = [];
+  // if (shortestPath.length !== 0 ) {
+  //   connectPath(shortestPath);
+  // }
+  counter = counter - 1;
+    // counter = counter - 1;
+  console.log('counter 2', counter);
+
+  console.log('shortestPath', shortestPath);
+
+  if(counter === 0 ** neighbours.length !== 0 ) {
+            console.log("BINGO start");
+
+    neighbours.forEach(function(neigh, n) {
+      if(neigh.counter === 1 ) {
+        console.log("BINGO");
+        connectPath(neighbours)
+      } else {
+        console.log('Better luck next time');
+      }
+    })
+    }
+  }
 }
 
 function isDestinationVisited(array) {
+  console.log('is destination');
   //compare element to see if it is eiter left right or top of end square
     array.forEach(function(element, i) {
       if(element.distance.x + 1 === (_store.end.x - _store.start.x) &&
         element.distance.y === (_store.end.y - _store.start.y)) {
-        markPath();
+        // markPath();
+        console.log('is destination left');
+
         pathFinder();
 
       }
 
       if(element.distance.x === (_store.end.x - _store.start.x) &&
         element.distance.y -1 === (_store.end.y - _store.start.y)) {
-        markPath();
+        // markPath();
+        console.log('is destination top');
+
         pathFinder();
 
       }
 
       if(element.distance.x === (_store.end.x - _store.start.x) && element.distance.y +1 === (_store.end.y - _store.start.y)) {
-        markPath();
+        // markPath();
+        console.log('is destination bottom');
+
+        pathFinder();
+
+      }
+  })
+
+}
+
+function isDestinationVisited2(array) {
+  // console.log('is destination  2');
+  //compare element to see if it is eiter left right or top of end square
+    array.forEach(function(element, i) {
+      if(element.x + 1 === _store.end.x && element.y === _store.end.y) {
+        // markPath();
+        console.log('is destination 2 left');
+
+        pathFinder();
+
+      }
+
+      if(element.x === _store.end.x && element.y -1 === _store.end.y ) {
+        // markPath();
+        console.log('is destination 2 top');
+
+        pathFinder();
+
+      }
+
+      if(element.x === _store.end.x && element.y +1 === _store.end.y) {
+        // markPath();
+        console.log('is destination 2 bottom');
+
         pathFinder();
 
       }
@@ -400,33 +729,33 @@ AppDispatcher.register((payload) => {
 
       let unVisited = _store.grid.filter((obj => (obj.clicked === "true" && obj.visited !== "visited" && obj.visited !== "current"  ) ));
 
+      // console.log('unVisited', unVisited);
 
       // let visited = _store.grid.filter((obj => (obj.visited === "visited") ));
       // console.log('visited', visited);
       // current starts at start
-      let current = _store.grid.filter((obj => (obj.visited === "current") ));
+      // let current = _store.grid.filter((obj => (obj.visited === "current") ));
       //else set current to to unvisted element that does not have distance set to infinity 
-      if (current.length === 0 ) {
-        unVisited.forEach(function(element, i){
-          if (element.distance !== Infinity) {
-            current = [element];
-            unVisited.splice(i,1);
-          }
-        })
-      }
-      if (current.length > 0 ) {
-        current[0].visited = "current";
-      }
+      // if (current.length === 0 ) {
+      //   unVisited.forEach(function(element, i){
+      //     if (element.distance !== Infinity) {
+      //       current = [element];
+      //       unVisited.splice(i,1);
+      //     }
+      //   })
+      // }
+      // if (current.length > 0 ) {
+      //   current[0].visited = "current";
+      // }
 
-      // let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
+      let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
 
-      unVisited.push(...current);
+      // unVisited.push(...current);
 
-      // unVisited.push(...end);
-      // console.log('unVisited', unVisited);
-      conpareDistances(current, unVisited);
-      removeCurrent(unVisited);
-      isDestinationVisited(unVisited);
+      unVisited.push(...end);
+      // conpareDistances(current, unVisited);
+      // removeCurrent(unVisited);
+      isDestinationVisited2(unVisited);
 
 
       GridsterStore.emit(CHANGE_EVENT);
