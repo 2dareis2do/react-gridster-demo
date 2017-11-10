@@ -73,11 +73,19 @@ function checkStart(elementX, elementY, startX, startY) {
   }
 }
 
-function pathFinder() {
+/* 
+  iterates through @unvisited cells 
+  starting at @end tries to iterate through until it is next to @start
+  does so increntally 
+  i.e. 0, 0+1, 0+1+1, 0+1+1+1 
+  until count item is next to end
+  || if not available i.e cell end is not end, and none other available return
+*/
+
+function pathFinder(unvisited, end, start) {
+
   console.log('pathfinder');
-  //is next stary 
-  //get end grid and assign 
-  let start = _store.grid.filter((obj => (obj.clicked === "start") ));
+
   let counter = 0;
   let reverseQ = [];
 
@@ -86,7 +94,7 @@ function pathFinder() {
 
   while (match === false) {
   // ideally these should not be here but they ar elinked to 
-    let clickedItems = _store.grid.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
+    let clickedItems = unvisited.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
     //queue is object where couter = counter 
     let queue = _store.grid.filter((obj => (obj.counter === counter) ));
     console.log('queue', queue);
@@ -94,61 +102,64 @@ function pathFinder() {
     if(queue.length > 1 ) {
       console.log('q more than one - may be make choose one');
     }
-    if(queue.length !== 0) {
+    if(queue.length !== 0 && start.length !== 0) {
       queue.forEach(function(end, i) {
       console.log('endy', end);
+      //iterate through start array
+        start.forEach(function(startCell, s) {
 
-      clickedItems.forEach(function(element, i) {
-        // console.log('element.counter', element.counter);
-        // if (element.counter === Infinity) {
-        //   console.log('infinite loop?')
-        // }
-        //top
-        if(element.x === end.x && (element.y + 1) === end.y ){
-          element.counter = counter + 1;
-          reverseQ.push(element);
-          // console.log('element.id top', element);
-          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-            notFound = false;
-            match = true;
-          }
-        }
+          clickedItems.forEach(function(element, j) {
+            // console.log('element.counter', element.counter);
+            // if (element.counter === Infinity) {
+            //   console.log('infinite loop?')
+            // }
+            //top
+            if(element.x === end.x && (element.y + 1) === end.y ){
+              element.counter = counter + 1;
+              reverseQ.push(element);
+              // console.log('element.id top', element);
+              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
+                notFound = false;
+                match = true;
+              }
+            }
 
-        //right
-        if(element.x === (end.x + 1) && element.y === end.y ){
-          element.counter = counter + 1;
-          reverseQ.push(element);
-           console.log('element.id right', element);
-          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-            notFound = false;
-            match = true;
-          }
-        }
+            //right
+            if(element.x === (end.x + 1) && element.y === end.y ){
+              element.counter = counter + 1;
+              reverseQ.push(element);
+               console.log('element.id right', element);
+              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
+                notFound = false;
+                match = true;
+              }
+            }
 
-        //bottom
-        if(element.x === end.x && (element.y - 1) === end.y ){
-          element.counter = counter + 1;
-          reverseQ.push(element);
-          // console.log('element.id bottom', element);
-          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-            notFound = false;
-            match = true;
-          }
-        }
+            //bottom
+            if(element.x === end.x && (element.y - 1) === end.y ){
+              element.counter = counter + 1;
+              reverseQ.push(element);
+              // console.log('element.id bottom', element);
+              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
+                notFound = false;
+                match = true;
+              }
+            }
 
-        //left
-        if(element.x === (end.x - 1) && element.y === end.y ){
-          element.counter = counter + 1;
-          reverseQ.push(element);
-          // console.log('element.id left', element);
-          if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
-            notFound = false;
-            match = true;
-          }
-        }
+            //left
+            if(element.x === (end.x - 1) && element.y === end.y ){
+              element.counter = counter + 1;
+              reverseQ.push(element);
+              // console.log('element.id left', element);
+              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
+                notFound = false;
+                match = true;
+              }
+            }
 
 
-      })
+          })
+        })
     })
  
 
@@ -359,58 +370,45 @@ function pathFinder() {
   }
 }
 
-function isDestinationVisited(array) {
-  // console.log('is destination  2');
-  //compare element to see if it is eiter left right or top of end square
-  console.log('array', array);
-  // loops though array of clicled items + end starting from end
+/*
+  accepts array of objects  
+  if one of @unvisited cells is next to @end
+  if match calls pathFinder function passing, @unvisited cells, @start and @end
+*/
+function isEndVisited(unvisited, end, start) {
+  //need some way of checking if path exits before as we have no way of knowing
+  if(end.length > 1) {
+    console.log('multiple ends!!');
+  }
 
-  //need some way of checking if path exits before as we have no way of knpwing
-  // if the end cell has cells in from
-  //seprate path into counting 
-  //when counting finished  then traverse
-  // 
-    array.forEach(function(element, i) {
-      // top
-      if(element.x === _store.end.x && element.y -1 === _store.end.y ) {
-        // markPath();
-        console.log('is destination 2 top');
-        console.log('is destination 2 top element', element);
+  if(unvisited.length !== 0 && end.length !== 0) {
 
-        pathFinder();
+    end.forEach(function(enditem, j) {
 
-      }
-       // right
-      if(element.x - 1 === _store.end.x && element.y === _store.end.y) {
-        // markPath();
-        console.log('is destination 2 right');
-        console.log('is destination 2 right element', element);
+      unvisited.forEach(function(element, i) {
+        // top
+        if(element.x === enditem.x && element.y -1 === enditem.y ) {
+          pathFinder(unvisited, end, start);
+        }
+         // right
+        if(element.x - 1 === enditem.x && element.y === enditem.y) {
+          pathFinder(unvisited, end, start);
+        }
+        // bottom
+        if(element.x === enditem.x && element.y +1 === enditem.y) {
+          pathFinder(unvisited, end, start);
+        }
+         // left
+        if(element.x + 1 === enditem.x && element.y === enditem.y) {
+          // console.log('end left here')
+          pathFinder(unvisited, end, start);
+        }
 
-        pathFinder();
+      })
 
-      }
+    })
 
-      // bottom
-      if(element.x === _store.end.x && element.y +1 === _store.end.y) {
-        // markPath();
-        console.log('is destination 2 bottom');
-        console.log('is destination 2 bottom element', element);
-
-        pathFinder();
-
-      }
-       // left
-      if(element.x + 1 === _store.end.x && element.y === _store.end.y && element.counter) {
-        // markPath();
-        console.log('is destination 2 left');
-        console.log('is destination 2 left element', element);
-        console.log('is destination 2 left element counter', element.counter);
-
-        pathFinder();
-
-      }
-  })
-
+  }
 }
 
 function xcoord(number) {
@@ -548,11 +546,14 @@ AppDispatcher.register((payload) => {
       let unVisited = _store.grid.filter((obj => (obj.clicked === "true" && obj.visited !== "visited" && obj.visited !== "current"  ) ));
 
 
-      let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
+      let end = _store.grid.filter((obj => (obj.clicked === "end") ));
+
+      let start = _store.grid.filter((obj => (obj.clicked === "start") ));
+
 
       // unVisited.push(...end);
-
-      isDestinationVisited(unVisited);
+      // condition here 
+      isEndVisited(unVisited, end, start);
 
 
       GridsterStore.emit(CHANGE_EVENT);
