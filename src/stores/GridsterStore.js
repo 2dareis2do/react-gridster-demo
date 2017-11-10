@@ -49,26 +49,70 @@ function connectPath(array) {
   })
 }
 
-//checks if element is next to
-function checkStart(elementX, elementY, startX, startY) {
-   // console.log('checkStart');
-  if(elementX === startX && elementY + 1 === startY ){
+function checkTop(x, y, targetX, targetY){
+  if(x === targetX && y + 1 === targetY ){
     console.log('checkstart top start');
     return true;
   }
-  //right
-  if(elementX === startX + 1 && elementY === startY ){
+}
+
+function checkRight(x, y, targetX, targetY){
+  if(x === targetX + 1 && y === targetY ){
     console.log('checkstart right start');
     return true;
   }
-  //bottom
-  if(elementX === startX && elementY - 1 === startY ){
+}
+
+function checkBottom(x, y, targetX, targetY){
+  if(x === targetX && y - 1 === targetY ){
     console.log('checkstart bottom start');
     return true;
   }
-  // left
-  if(elementX === startX - 1 && elementY === startY ){
+}
+
+function checkLeft(x, y, targetX, targetY){
+  if(x === targetX - 1 && y === targetY ){
     console.log('checkstart left start');
+    return true;
+  }
+}
+/*
+  Takes @cellX and @cellY value and returns
+  in addition to @startX and @startY
+  And returns true if either top, bottom, left or right
+*/
+function checkStart(cellX, cellY, startX, startY) {
+   // top
+  // if(elementX === startX && elementY + 1 === startY ){
+  //   console.log('checkstart top start');
+  //   return true;
+  // }
+  if(checkTop(cellX, cellY, startX, startY)) {
+    return true;
+  }
+  //right
+  // if(elementX === startX + 1 && elementY === startY ){
+  //   console.log('checkstart right start');
+  //   return true;
+  // }
+  if(checkRight(cellX, cellY, startX, startY)) {
+    return true;
+  }
+
+  //bottom
+  // if(elementX === startX && elementY - 1 === startY ){
+  //   console.log('checkstart bottom start');
+  //   return true;
+  // }
+  if(checkBottom(cellX, cellY, startX, startY)) {
+    return true;
+  }
+  // left
+  // if(elementX === startX - 1 && elementY === startY ){
+  //   console.log('checkstart left start');
+  //   return true;
+  // }
+  if(checkLeft(cellX, cellY  , startX, startY)) {
     return true;
   }
 }
@@ -93,28 +137,32 @@ function pathFinder(unvisited, end, start) {
   let notFound = true;
 
   while (match === false) {
-  // ideally these should not be here but they ar elinked to 
-    let clickedItems = unvisited.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
-    //queue is object where couter = counter 
-    let queue = _store.grid.filter((obj => (obj.counter === counter) ));
-    console.log('queue', queue);
-    // iterate through queues 
-    if(queue.length > 1 ) {
-      console.log('q more than one - may be make choose one');
+
+    /*
+        ideally these should not be here but they are linked to 
+        i.e. those set to infinity or counted elsewhere with a higher value
+    */
+
+    let uncountedItems = unvisited.filter((obj => (obj.counter > counter) ));
+
+    //queue is array object where counter = counter 
+    let matchedItems = _store.grid.filter((obj => (obj.counter === counter) ));
+
+    if (matchedItems.length > 1) {
+      console.log('matched items more than one');
+      console.log('matchedItems', matchedItems);
     }
-    if(queue.length !== 0 && start.length !== 0) {
-      queue.forEach(function(end, i) {
-      console.log('endy', end);
-      //iterate through start array
+
+    if(matchedItems.length !== 0 && start.length !== 0) {
+
+      matchedItems.forEach(function(matchCell, i) {
+        //iterate through start array
         start.forEach(function(startCell, s) {
 
-          clickedItems.forEach(function(element, j) {
-            // console.log('element.counter', element.counter);
-            // if (element.counter === Infinity) {
-            //   console.log('infinite loop?')
-            // }
+          uncountedItems.forEach(function(element, j) {
             //top
-            if(element.x === end.x && (element.y + 1) === end.y ){
+            console.log('top', checkTop(element.x, element.y, matchCell.x, matchCell.y));
+            if(element.x === matchCell.x && (element.y + 1) === matchCell.y ){
               element.counter = counter + 1;
               reverseQ.push(element);
               // console.log('element.id top', element);
@@ -125,10 +173,10 @@ function pathFinder(unvisited, end, start) {
             }
 
             //right
-            if(element.x === (end.x + 1) && element.y === end.y ){
+            if(element.x === (matchCell.x + 1) && element.y === matchCell.y ){
               element.counter = counter + 1;
               reverseQ.push(element);
-               console.log('element.id right', element);
+               // console.log('element.id right', element);
               if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
                 notFound = false;
                 match = true;
@@ -136,7 +184,7 @@ function pathFinder(unvisited, end, start) {
             }
 
             //bottom
-            if(element.x === end.x && (element.y - 1) === end.y ){
+            if(element.x === matchCell.x && (element.y - 1) === matchCell.y ){
               element.counter = counter + 1;
               reverseQ.push(element);
               // console.log('element.id bottom', element);
@@ -147,7 +195,7 @@ function pathFinder(unvisited, end, start) {
             }
 
             //left
-            if(element.x === (end.x - 1) && element.y === end.y ){
+            if(element.x === (matchCell.x - 1) && element.y === matchCell.y ){
               element.counter = counter + 1;
               reverseQ.push(element);
               // console.log('element.id left', element);
@@ -161,17 +209,15 @@ function pathFinder(unvisited, end, start) {
           })
         })
     })
- 
 
     // console.log('queue', queue);
-
     counter = counter + 1;
-
-
 
    }
 
   }
+
+  console.log('reverseQ', reverseQ);
 
   console.log('notFound', notFound);
   console.log('counter', counter);
