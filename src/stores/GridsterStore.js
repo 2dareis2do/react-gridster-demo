@@ -35,6 +35,13 @@ class GridsterStoreClass extends EventEmitter {
 
 }
 
+function clearPath() {
+  _store.grid.forEach((element, i) => {
+    if (element.path === "connected"){
+      element.path = null;
+    }
+  })
+}
 //paint path
 function connectPath(array) {
   array.forEach((element, i) => {
@@ -68,14 +75,11 @@ function checkStart(elementX, elementY, startX, startY) {
 
 function pathFinder() {
   console.log('pathfinder');
+  //is next stary 
   //get end grid and assign 
   let start = _store.grid.filter((obj => (obj.clicked === "start") ));
-
-  // let end = _store.grid.filter((obj => (obj.clicked === "end") ));
-  // console.log('end', end);
   let counter = 0;
- // let adjacentItems = clickedItems.filter((obj => (obj.x ===  && obj.counter > counter ) ));
-  let tempQ = [];
+  let reverseQ = [];
 
   let match = false;
   let notFound = true;
@@ -83,10 +87,13 @@ function pathFinder() {
   while (match === false) {
   // ideally these should not be here but they ar elinked to 
     let clickedItems = _store.grid.filter((obj => (obj.clicked === "true" && obj.counter > counter ) ));
-//queue is object where couter = counter 
+    //queue is object where couter = counter 
     let queue = _store.grid.filter((obj => (obj.counter === counter) ));
     console.log('queue', queue);
     // iterate through queues 
+    if(queue.length > 1 ){
+      console.log('q more than one - may be make choose one');
+    }
     if(queue.length !== 0) {
       queue.forEach(function(end, i) {
       // console.log('endy', end);
@@ -95,7 +102,7 @@ function pathFinder() {
         //top
         if(element.x === end.x && (element.y + 1) === end.y ){
           element.counter = counter + 1;
-          tempQ.push(element);
+          reverseQ.push(element);
           // console.log('element.id top', element);
           if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
             notFound = false;
@@ -106,7 +113,7 @@ function pathFinder() {
         //right
         if(element.x === (end.x + 1) && element.y === end.y ){
           element.counter = counter + 1;
-          tempQ.push(element);
+          reverseQ.push(element);
            console.log('element.id right', element);
           if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
             notFound = false;
@@ -117,7 +124,7 @@ function pathFinder() {
         //bottom
         if(element.x === end.x && (element.y - 1) === end.y ){
           element.counter = counter + 1;
-          tempQ.push(element);
+          reverseQ.push(element);
           // console.log('element.id bottom', element);
           if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
             notFound = false;
@@ -128,7 +135,7 @@ function pathFinder() {
         //left
         if(element.x === (end.x - 1) && element.y === end.y ){
           element.counter = counter + 1;
-          tempQ.push(element);
+          reverseQ.push(element);
           // console.log('element.id left', element);
           if (checkStart(element.x, element.y, start[0].x, start[0].y)) {
             notFound = false;
@@ -155,7 +162,7 @@ function pathFinder() {
   console.log('start', start);
   start[0].counter = counter + 1;
 
-  console.log('tempQ after', tempQ);
+  // console.log('tempQ after', tempQ);
   // console.log('shortestPath', shortestPath);
 
   //Now, start at S (7) and go to the nearby cell with the lowest number (unchecked cells cannot be moved to). The path traced is (1,3,7) -> (1,4,6) -> (1,5,5) -> (1,6,4) -> (1,7,3) -> (1,8,2) -> (2,8,1) -> (3,8,0). In the event that two numbers are equally low (for example, if S was at (2,5)), pick a random direction – the lengths are the same. The algorithm is now complete.
@@ -165,7 +172,6 @@ function pathFinder() {
   //get start x, y
   // console.log('start', start);
   let neighbours = [];
-  // console.log('neighbours', neighbours);
   //iterate over temp items
     //  if temp item  is neighbour
   // add to list of neighbours
@@ -175,39 +181,39 @@ function pathFinder() {
 
     if (neighbours.length === 0) {
 
-    tempQ.forEach(function(item, i){
+    reverseQ.forEach(function(item, i){
        // top
-       if(item.x === start[0].x && item.y === start[0].y - 1) {
-          console.log('top tempQ');
-          if(item.counter === counter) {
-            console.log('top push tempQ');
-            neighbours.push(item);
-          }
+      if(item.x === start[0].x && item.y === start[0].y - 1) {
+        console.log('top reverseQ');
+        if(item.counter === counter) {
+          console.log('top push reverseQ');
+          neighbours.push(item);
         }
-        //right
-        if(start[0].x - 1 === item.x && start[0].y === item.y) {
-          console.log('right tempQ');
-          if(item.counter === counter) {
-            console.log('right push tempQ');
-            neighbours.push(item);
-          }
+      }
+      //right
+      if(start[0].x - 1 === item.x && start[0].y === item.y) {
+        console.log('right reverseQ');
+        if(item.counter === counter) {
+          console.log('right push reverseQ');
+          neighbours.push(item);
         }
-        //bottom
-        if(start[0].x === item.x && item.y === start[0].y + 1) {
-          console.log('bottom tempQ');
-          if(item.counter === counter) {
-            console.log('bottom push tempQ');
-            neighbours.push(item);
-          }
+      }
+      //bottom
+      if(start[0].x === item.x && item.y === start[0].y + 1) {
+        console.log('bottom reverseQ');
+        if(item.counter === counter) {
+          console.log('bottom push reverseQ');
+          neighbours.push(item);
         }
-        //left
-        if(start[0].x + 1 === item.x && start[0].y === item.y) {
-          console.log('left tempQ');
-          if(item.counter === counter) {
-            console.log('left push tempQ');
-            neighbours.push(item);
-          }
+      }
+      //left
+      if(start[0].x + 1 === item.x && start[0].y === item.y) {
+        console.log('left reverseQ');
+        if(item.counter === counter) {
+          console.log('left push reverseQ');
+          neighbours.push(item);
         }
+      }
 
       })
     }
@@ -253,39 +259,39 @@ function pathFinder() {
   console.log('tempZ.length', tempZ.length);
 
   // let newNeighBours = [];
-  if (tempZ.length !==0 && tempQ.length !==0) {
+  if (tempZ.length !==0 && reverseQ.length !==0) {
 
-    tempQ.forEach(function(item, i){
+    reverseQ.forEach(function(item, i){
       // top
       if(tempZ[0].x === item.x && tempZ[0].y - 1 === item.y ) {
-        console.log('top tempQ');
+        console.log('top reverseQ');
         if(item.counter === counter) {
           // console.log('top tempZ push');
-          console.log('item tempQ push', item);
+          console.log('item reverseQ push', item);
           neighbours.push(item);
         }
       }
       //right
       if(tempZ[0].x - 1 === item.x && tempZ[0].y === item.y) {
-        console.log('right tempQ');
+        console.log('right reverseQ');
         if(item.counter === counter) {
-          console.log('right tempQ push');
+          console.log('right reverseQ push');
           neighbours.push(item);
         }
       }
       //bottom
       if(tempZ[0].x === item.x && tempZ[0].y + 1 === item.y) {
-        console.log('bottom tempQ');
+        console.log('bottom reverseQ');
         if(item.counter === counter) {
-          console.log('bottom tempQ push');
+          console.log('bottom reverseQ push');
           neighbours.push(item);
         }
       }
       //left
       if(tempZ[0].x + 1 === item.x && tempZ[0].y === item.y) {
-        console.log('left tempQ');
+        console.log('left reverseQ');
         if(item.counter === counter) {
-          console.log('left tempQ push');
+          console.log('left reverseQ push');
           neighbours.push(item);
         }
       }
@@ -319,13 +325,14 @@ function pathFinder() {
   // console.log('shortestPath', shortestPath);
   console.log('neighbours',neighbours);
   if(counter === 0 && neighbours.length !== 0 ) {
-            console.log("BINGO start");
+        console.log("BINGO start");
 
     neighbours.forEach(function(neigh, n) {
       if(neigh.counter === 1 ) {
         console.log('neigh', neigh);
 
         console.log("BINGO");
+        clearPath();
         connectPath(neighbours)
       } else {
         console.log('neigh', neigh.counter);
@@ -337,10 +344,11 @@ function pathFinder() {
   }
 }
 
-function isDestinationVisited2(array) {
+function isDestinationVisited(array) {
   // console.log('is destination  2');
   //compare element to see if it is eiter left right or top of end square
 
+  // loops though array of clicled items + end starting from end
     array.forEach(function(element, i) {
       // top
       if(element.x === _store.end.x && element.y -1 === _store.end.y ) {
@@ -516,9 +524,9 @@ AppDispatcher.register((payload) => {
 
       let end = _store.grid.filter((obj => (obj.clicked === "end" && obj.visited !== "visited") ));
 
-      unVisited.push(...end);
+      // unVisited.push(...end);
 
-      isDestinationVisited2(unVisited);
+      isDestinationVisited(unVisited);
 
 
       GridsterStore.emit(CHANGE_EVENT);
