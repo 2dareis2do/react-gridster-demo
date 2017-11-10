@@ -91,14 +91,18 @@ function pathFinder() {
     let queue = _store.grid.filter((obj => (obj.counter === counter) ));
     console.log('queue', queue);
     // iterate through queues 
-    if(queue.length > 1 ){
+    if(queue.length > 1 ) {
       console.log('q more than one - may be make choose one');
     }
     if(queue.length !== 0) {
       queue.forEach(function(end, i) {
-      // console.log('endy', end);
-      clickedItems.forEach(function(element, i) {
+      console.log('endy', end);
 
+      clickedItems.forEach(function(element, i) {
+        // console.log('element.counter', element.counter);
+        // if (element.counter === Infinity) {
+        //   console.log('infinite loop?')
+        // }
         //top
         if(element.x === end.x && (element.y + 1) === end.y ){
           element.counter = counter + 1;
@@ -143,6 +147,7 @@ function pathFinder() {
           }
         }
 
+
       })
     })
  
@@ -150,7 +155,11 @@ function pathFinder() {
     // console.log('queue', queue);
 
     counter = counter + 1;
+
+
+
    }
+
   }
 
   console.log('notFound', notFound);
@@ -159,7 +168,7 @@ function pathFinder() {
 
   let recursion = true;
 
-  console.log('start', start);
+  // console.log('start', start);
   start[0].counter = counter + 1;
 
   // console.log('tempQ after', tempQ);
@@ -171,175 +180,181 @@ function pathFinder() {
   //start is array object
   //get start x, y
   // console.log('start', start);
+
   let neighbours = [];
   //iterate over temp items
     //  if temp item  is neighbour
   // add to list of neighbours
 
-  // run in neighbours is 0 i.e. only on first start
-  while (recursion === true && counter > 0) {
+  // run in neighbours is 0 i.e. only on first start complete and match === true
+  if(match === true) {
 
-    if (neighbours.length === 0) {
+    while (recursion === true && counter > 0) {
 
-    reverseQ.forEach(function(item, i){
-       // top
-      if(item.x === start[0].x && item.y === start[0].y - 1) {
-        console.log('top reverseQ');
-        if(item.counter === counter) {
-          console.log('top push reverseQ');
-          neighbours.push(item);
-        }
-      }
-      //right
-      if(start[0].x - 1 === item.x && start[0].y === item.y) {
-        console.log('right reverseQ');
-        if(item.counter === counter) {
-          console.log('right push reverseQ');
-          neighbours.push(item);
-        }
-      }
-      //bottom
-      if(start[0].x === item.x && item.y === start[0].y + 1) {
-        console.log('bottom reverseQ');
-        if(item.counter === counter) {
-          console.log('bottom push reverseQ');
-          neighbours.push(item);
-        }
-      }
-      //left
-      if(start[0].x + 1 === item.x && start[0].y === item.y) {
-        console.log('left reverseQ');
-        if(item.counter === counter) {
-          console.log('left push reverseQ');
-          neighbours.push(item);
-        }
-      }
+      if (neighbours.length === 0) {
 
-      })
-    }
+        reverseQ.forEach(function(item, i){
+          // console.log('rq item', item);
+          // console.log('rq item.counter', item.counter);
+           // top
+          if(item.x === start[0].x && item.y === start[0].y - 1) {
+            // console.log('top reverseQ');
+            if(item.counter === counter) {
+              console.log('top push reverseQ');
+              neighbours.push(item);
+            }
+          }
+          //right
+          if(start[0].x - 1 === item.x && start[0].y === item.y) {
+            // console.log('right reverseQ');
+            if(item.counter === counter) {
+              console.log('right push reverseQ');
+              neighbours.push(item);
+            }
+          }
+          //bottom
+          if(start[0].x === item.x && item.y === start[0].y + 1) {
+            // console.log('bottom reverseQ');
+            if(item.counter === counter) {
+              console.log('bottom push reverseQ');
+              neighbours.push(item);
+            }
+          }
+          //left
+          if(start[0].x + 1 === item.x && start[0].y === item.y) {
+            // console.log('left reverseQ');
+            if(item.counter === counter) {
+              console.log('left push reverseQ');
+              neighbours.push(item);
+            }
+          }
 
-    console.log('neighbours after start', neighbours);
-
-    let lowestNumber = Infinity;
-    //get neighboure 
-
-
-
-  //  for each neighbour take the loweset count ...
-  if(neighbours.length !== 0){
-    console.log('gt 1 !');
-    neighbours.forEach(function(cell, c){
-      // ige tneighbout with lowest value for counter
-      //check counter 
-      if (cell.counter < lowestNumber) {
-        console.log('cell.counter', cell.counter);
-        lowestNumber = cell.counter;
-      }
-    })
-
-  }
-
-  //used to select cell from next round
-  let tempZ = [];
-  if(neighbours.length !== 0){
-    //take item with least count ....
-    neighbours.forEach(function(cell, c) {
-      console.log('shortest cell push', c);
-
-      if (cell.counter === lowestNumber) {
-        console.log('shortest cell push inside', c);
-
-        tempZ.push(cell);
+        })
       }
 
-    })
-  }
+      console.log('neighbours after start', neighbours);
 
-  console.log('tempZ', tempZ);
-  console.log('tempZ.length', tempZ.length);
+      let lowestNumber = Infinity;
+      //get neighboure 
 
-  // let newNeighBours = [];
-  if (tempZ.length !==0 && reverseQ.length !==0) {
 
-    reverseQ.forEach(function(item, i){
-      // top
-      if(tempZ[0].x === item.x && tempZ[0].y - 1 === item.y ) {
-        console.log('top reverseQ');
-        if(item.counter === counter) {
-          // console.log('top tempZ push');
-          console.log('item reverseQ push', item);
-          neighbours.push(item);
-        }
-      }
-      //right
-      if(tempZ[0].x - 1 === item.x && tempZ[0].y === item.y) {
-        console.log('right reverseQ');
-        if(item.counter === counter) {
-          console.log('right reverseQ push');
-          neighbours.push(item);
-        }
-      }
-      //bottom
-      if(tempZ[0].x === item.x && tempZ[0].y + 1 === item.y) {
-        console.log('bottom reverseQ');
-        if(item.counter === counter) {
-          console.log('bottom reverseQ push');
-          neighbours.push(item);
-        }
-      }
-      //left
-      if(tempZ[0].x + 1 === item.x && tempZ[0].y === item.y) {
-        console.log('left reverseQ');
-        if(item.counter === counter) {
-          console.log('left reverseQ push');
-          neighbours.push(item);
-        }
+
+      //  for each neighbour take the loweset count ...
+      if(neighbours.length !== 0){
+        console.log('gt 1 !');
+        neighbours.forEach(function(cell, c){
+          // ige tneighbout with lowest value for counter
+          //check counter 
+          if (cell.counter < lowestNumber) {
+            console.log('cell.counter', cell.counter);
+            lowestNumber = cell.counter;
+          }
+        })
+
       }
 
-    })
+       //used to select cell from next round
+      let tempZ = [];
+      if(neighbours.length !== 0){
+        //take item with least count ....
+        neighbours.forEach(function(cell, c) {
+          console.log('shortest cell push', c);
 
-  }
-  
+          if (cell.counter === lowestNumber) {
+            console.log('shortest cell push inside', c);
 
-  // get next neighbour
-  // 
+            tempZ.push(cell);
+          }
 
-  //...and return or save  if neighbour > 0 //part of while condition?
-  // from neighboure 
-  console.log('lowestNumber after', lowestNumber);
-
-
-
-  // if count = 1  add item and end
-
-
-    // console.log('tempRec after', tempRec);
-    // let tempRec = [];
-  // if (shortestPath.length !== 0 ) {
-  //   connectPath(shortestPath);
-  // }
-  counter = counter - 1;
-    // counter = counter - 1;
-  console.log('counter 2', counter);
-
-  // console.log('shortestPath', shortestPath);
-  console.log('neighbours',neighbours);
-  if(counter === 0 && neighbours.length !== 0 ) {
-        console.log("BINGO start");
-
-    neighbours.forEach(function(neigh, n) {
-      if(neigh.counter === 1 ) {
-        console.log('neigh', neigh);
-
-        console.log("BINGO");
-        clearPath();
-        connectPath(neighbours)
-      } else {
-        console.log('neigh', neigh.counter);
-        console.log('Better luck next time');
-        connectPath(neighbours)
+        })
       }
-    })
+
+      console.log('tempZ', tempZ);
+      console.log('tempZ.length', tempZ.length);
+
+      // let newNeighBours = [];
+      if (tempZ.length !==0 && reverseQ.length !==0) {
+
+        reverseQ.forEach(function(item, i){
+          // top
+          if(tempZ[0].x === item.x && tempZ[0].y - 1 === item.y ) {
+            console.log('top reverseQ');
+            if(item.counter === counter) {
+              // console.log('top tempZ push');
+              console.log('item reverseQ push', item);
+              neighbours.push(item);
+            }
+          }
+          //right
+          if(tempZ[0].x - 1 === item.x && tempZ[0].y === item.y) {
+            console.log('right reverseQ');
+            if(item.counter === counter) {
+              console.log('right reverseQ push');
+              neighbours.push(item);
+            }
+          }
+          //bottom
+          if(tempZ[0].x === item.x && tempZ[0].y + 1 === item.y) {
+            console.log('bottom reverseQ');
+            if(item.counter === counter) {
+              console.log('bottom reverseQ push');
+              neighbours.push(item);
+            }
+          }
+          //left
+          if(tempZ[0].x + 1 === item.x && tempZ[0].y === item.y) {
+            console.log('left reverseQ');
+            if(item.counter === counter) {
+              console.log('left reverseQ push');
+              neighbours.push(item);
+            }
+          }
+
+        })
+
+      }
+    
+
+      // get next neighbour
+      // 
+
+      //...and return or save  if neighbour > 0 //part of while condition?
+      // from neighboure 
+      console.log('lowestNumber after', lowestNumber);
+
+
+
+      // if count = 1  add item and end
+
+
+        // console.log('tempRec after', tempRec);
+        // let tempRec = [];
+      // if (shortestPath.length !== 0 ) {
+      //   connectPath(shortestPath);
+      // }
+      counter = counter - 1;
+        // counter = counter - 1;
+      console.log('counter 2', counter);
+
+      // console.log('shortestPath', shortestPath);
+      console.log('neighbours',neighbours);
+      if(counter === 0 && neighbours.length !== 0 ) {
+            //console.log("BINGO start");
+
+        neighbours.forEach(function(neigh, n) {
+          if(neigh.counter === 1 ) {
+            console.log('neigh', neigh);
+
+            console.log("BINGO");
+            clearPath();
+            connectPath(neighbours)
+          } else {
+            console.log('neigh', neigh.counter);
+            console.log('Better luck next time');
+         //   connectPath(neighbours)
+          }
+        })
+      }
     }
   }
 }
@@ -347,13 +362,20 @@ function pathFinder() {
 function isDestinationVisited(array) {
   // console.log('is destination  2');
   //compare element to see if it is eiter left right or top of end square
-
+  console.log('array', array);
   // loops though array of clicled items + end starting from end
+
+  //need some way of checking if path exits before as we have no way of knpwing
+  // if the end cell has cells in from
+  //seprate path into counting 
+  //when counting finished  then traverse
+  // 
     array.forEach(function(element, i) {
       // top
       if(element.x === _store.end.x && element.y -1 === _store.end.y ) {
         // markPath();
         console.log('is destination 2 top');
+        console.log('is destination 2 top element', element);
 
         pathFinder();
 
@@ -362,6 +384,7 @@ function isDestinationVisited(array) {
       if(element.x - 1 === _store.end.x && element.y === _store.end.y) {
         // markPath();
         console.log('is destination 2 right');
+        console.log('is destination 2 right element', element);
 
         pathFinder();
 
@@ -371,14 +394,17 @@ function isDestinationVisited(array) {
       if(element.x === _store.end.x && element.y +1 === _store.end.y) {
         // markPath();
         console.log('is destination 2 bottom');
+        console.log('is destination 2 bottom element', element);
 
         pathFinder();
 
       }
        // left
-      if(element.x + 1 === _store.end.x && element.y === _store.end.y) {
+      if(element.x + 1 === _store.end.x && element.y === _store.end.y && element.counter) {
         // markPath();
         console.log('is destination 2 left');
+        console.log('is destination 2 left element', element);
+        console.log('is destination 2 left element counter', element.counter);
 
         pathFinder();
 
