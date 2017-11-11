@@ -16,7 +16,6 @@ let _store = {
   grid: []
 };
 
-console.log(_store);
 // Define the public event listeners and getters that
 // the views will use to listen for changes and retrieve
 // the store
@@ -40,6 +39,9 @@ function clearPath() {
   _store.grid.forEach((element, i) => {
     if (element.path === "connected"){
       element.path = null;
+      element.distance = Infinity;
+      element.counter = Infinity;
+      element.visited = "unvisited";
     }
   })
 }
@@ -307,8 +309,8 @@ function shortestPath(counted, end, start) {
   if(counter === 0 && shortestPath.length !== 0 ) {
     shortestPath.forEach(function(cell) {
       if(cell.counter === 1 ) {
-        console.log("Paint Shortest Path");
-        clearPath();
+        // console.log("Paint Shortest Path");
+        // clearPath();
         connectPath(shortestPath);
       }
     })
@@ -329,7 +331,6 @@ function pathFinder(unvisited, end, start) {
     if (shortestPath(countedCells, end, start)) {
       console.log('Found shortest path!!')
     }
-    console.log(_store);
 
   }
 
@@ -341,7 +342,8 @@ function pathFinder(unvisited, end, start) {
   if match calls pathFinder function passing, @unvisited cells, @start and @end
 */
 function isEndVisited(unvisited, end, start) {
-  // console.log('isEndVisited');
+  //clear path to start
+  clearPath();
   //need some way of checking if path exits before as we have no way of knowing
   if(end.length > 1) {
     console.log('multiple ends!!');
@@ -437,32 +439,31 @@ AppDispatcher.register((payload) => {
 
       if(_store.grid[clickIndex].clicked === "false" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
         _store.grid[clickIndex].clicked = "true";
-        console.log('_store.grid[clickIndex] clicked else');
-
       } else if(_store.grid[clickIndex].clicked === "true" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
-          console.log('_store.grid[clickIndex] clicked else');
-
-        _store.grid[clickIndex].clicked = "false";
-          _store.grid[clickIndex].path = null;
-          _store.grid[clickIndex].state = "initial";
-          _store.grid[clickIndex].flag = false;
-          _store.grid[clickIndex].distance = Infinity;
-          _store.grid[clickIndex].counter = Infinity;
-          _store.grid[clickIndex].visited = "unvisited";
-
-          clearPath();
-
-        // if (_store.grid[clickIndex].path === "connected" ) {
-        //   console.log('_store.grid[clickIndex].path', _store.grid[clickIndex].path);
-        //   _store.grid[clickIndex].path = null;
-        //   _store.grid[clickIndex].clicked = "false";
-        //   _store.grid[clickIndex].distance = Infinity;
-        //   _store.grid[clickIndex].counter = Infinity;
-
-        //   console.log('_store.grid[clickIndex].path after', _store.grid[clickIndex].path);
-        //   clearPath();
-        // }
+          _store.grid[clickIndex].clicked = "false";
+          // 
       }
+
+      // on click check for connection
+      //clearPath();
+      let unVisited = _store.grid.filter((obj => (obj.clicked === "true") ));
+
+      let end = _store.grid.filter((obj => (obj.clicked === "end") ));
+
+      let start = _store.grid.filter((obj => (obj.clicked === "start") ));
+
+      // is end visited implies that end need to be clicked , that is the trigger for calculating and rendering the path
+
+      // currenly a bug that means if you click on an item that is clicked, and has path === connected and it is not the end or start path goes into Infinite Loop
+
+      // if start and end is still connected , does not mean there is a path
+      // hovevr ther cannot be a path if start and end is not connected
+
+      // path only starts if end is visited - 
+      // fd match will call path finder
+      // if path finder completes i.e reaches end cell 
+      // shortest path is then alled
+      isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
 
@@ -521,24 +522,6 @@ AppDispatcher.register((payload) => {
       let endIndex = _store.grid.findIndex((obj => obj.id === parseInt(endCell, 10)));
       _store.grid[endIndex].clicked = "end";
       _store.grid[endIndex].counter = 0;
-
-      GridsterStore.emit(CHANGE_EVENT);
-    break;
-
-    case GridsterConstants.SHORT_PATH:
-
-      // shortfilter marks all clicked items
-      // this is initially the same as unvisited items + end item
-      // let shortFilter = _store.grid.filter((obj => obj.clicked === "true" ));
-
-      let unVisited = _store.grid.filter((obj => (obj.clicked === "true" && obj.visited !== "visited" && obj.visited !== "current"  ) ));
-
-
-      let end = _store.grid.filter((obj => (obj.clicked === "end") ));
-
-      let start = _store.grid.filter((obj => (obj.clicked === "start") ));
-
-      isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
     break;

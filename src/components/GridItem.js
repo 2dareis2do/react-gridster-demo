@@ -7,7 +7,7 @@ import { generateClick } from '../actions/GridsterActions.js';
 import { mouseEnter } from '../actions/GridsterActions.js';
 import { mouseExit } from '../actions/GridsterActions.js';
 import { mouseDown } from '../actions/GridsterActions.js';
-import { shortPath } from '../actions/GridsterActions.js';
+// import { shortPath } from '../actions/GridsterActions.js';
 
 export default class GridItem extends Component {
 
@@ -45,7 +45,7 @@ export default class GridItem extends Component {
 
   _onClick(event) {
     generateClick(event.target.id);
-    shortPath();
+    // shortPath();
   }
 
   _onMouseEnter(event) {
@@ -89,7 +89,7 @@ export default class GridItem extends Component {
       itemColour = '#F8F8F8';
     }
     if (this.state.grid !== undefined && this.state.grid[this.props.id].path === "connected" && this.state.grid[this.props.id].state === "hover") {
-      itemColour = 'red';
+      itemColour = 'rgb(255, 201, 39)';
     }
    return (
 
