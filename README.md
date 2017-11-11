@@ -14,6 +14,7 @@ Starting from the left try to connect the start and end cells by clicking or tou
 
 ## Todo
 1. Styling around states of buttons
+2. Hover states when path is drawn
 
 ## Demo
 
