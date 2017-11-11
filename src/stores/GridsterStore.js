@@ -16,6 +16,7 @@ let _store = {
   grid: []
 };
 
+console.log(_store);
 // Define the public event listeners and getters that
 // the views will use to listen for changes and retrieve
 // the store
@@ -328,6 +329,8 @@ function pathFinder(unvisited, end, start) {
     if (shortestPath(countedCells, end, start)) {
       console.log('Found shortest path!!')
     }
+    console.log(_store);
+
   }
 
 }
@@ -434,8 +437,31 @@ AppDispatcher.register((payload) => {
 
       if(_store.grid[clickIndex].clicked === "false" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
         _store.grid[clickIndex].clicked = "true";
-      } else if (_store.grid[clickIndex].clicked !== "false" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
+        console.log('_store.grid[clickIndex] clicked else');
+
+      } else if(_store.grid[clickIndex].clicked === "true" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
+          console.log('_store.grid[clickIndex] clicked else');
+
         _store.grid[clickIndex].clicked = "false";
+          _store.grid[clickIndex].path = null;
+          _store.grid[clickIndex].state = "initial";
+          _store.grid[clickIndex].flag = false;
+          _store.grid[clickIndex].distance = Infinity;
+          _store.grid[clickIndex].counter = Infinity;
+          _store.grid[clickIndex].visited = "unvisited";
+
+          clearPath();
+
+        // if (_store.grid[clickIndex].path === "connected" ) {
+        //   console.log('_store.grid[clickIndex].path', _store.grid[clickIndex].path);
+        //   _store.grid[clickIndex].path = null;
+        //   _store.grid[clickIndex].clicked = "false";
+        //   _store.grid[clickIndex].distance = Infinity;
+        //   _store.grid[clickIndex].counter = Infinity;
+
+        //   console.log('_store.grid[clickIndex].path after', _store.grid[clickIndex].path);
+        //   clearPath();
+        // }
       }
 
       GridsterStore.emit(CHANGE_EVENT);
@@ -512,11 +538,7 @@ AppDispatcher.register((payload) => {
 
       let start = _store.grid.filter((obj => (obj.clicked === "start") ));
 
-
-      // unVisited.push(...end);
-      // condition here 
       isEndVisited(unVisited, end, start);
-
 
       GridsterStore.emit(CHANGE_EVENT);
     break;

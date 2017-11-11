@@ -67,11 +67,9 @@ export default class GridItem extends Component {
     if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "initial") {
       itemColour = '#F1F1F1';
     }
-
     if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "hover") {
       itemColour = '#F8F8F8';
     }
-
     if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "down") {
       itemColour = '#E2E2E2';
     }
@@ -84,15 +82,15 @@ export default class GridItem extends Component {
     if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "start") {
       itemColour = '#0F0';
     }
-
     if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "end") {
       itemColour = '#7ED321';
     }
-
     if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "true" && this.state.grid[this.props.id].state === "hover") {
       itemColour = '#F8F8F8';
     }
-
+    if (this.state.grid !== undefined && this.state.grid[this.props.id].path === "connected" && this.state.grid[this.props.id].state === "hover") {
+      itemColour = 'red';
+    }
    return (
 
     <li
