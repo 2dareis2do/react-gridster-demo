@@ -14,7 +14,7 @@ Starting from the left try to connect the start and end cells by clicking or tou
 
 ## Todo
 1. Styling around states of buttons
-2. Hover states when path is drawn
+2. Bug when clicking on connected cell that is not next to start or end cell
 
 ## Demo
 
