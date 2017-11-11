@@ -51,28 +51,28 @@ function connectPath(array) {
 
 function checkTop(x, y, targetX, targetY){
   if(x === targetX && y + 1 === targetY ){
-    console.log('checkstart top');
+    // console.log('checkstart top');
     return true;
   }
 }
 
 function checkRight(x, y, targetX, targetY){
   if(x === targetX + 1 && y === targetY ){
-    console.log('checkstart right');
+    // console.log('checkstart right');
     return true;
   }
 }
 
 function checkBottom(x, y, targetX, targetY){
   if(x === targetX && y - 1 === targetY ){
-    console.log('checkstart bottom');
+    // console.log('checkstart bottom');
     return true;
   }
 }
 
 function checkLeft(x, y, targetX, targetY){
   if(x === targetX - 1 && y === targetY ){
-    console.log('checkstart left');
+    // console.log('checkstart left');
     return true;
   }
 }
@@ -101,59 +101,45 @@ function checkStart(cellX, cellY, startX, startY) {
   }
 }
 
-// function test() {
-//   let data = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end") ));
-
-//   console.log('test data', data)
-// }
 
 /* 
   iterates through @unvisited cells 
-  starting at @end cell tries to iterate through until it is next to @start cell
-  does so increntally 
+  starting at @end cell until it is next to @start cell
   i.e. 0, 0+1, 0+1+1, 0+1+1+1 
   until count item is next to end
   || if not available i.e cell end is not end, and none other available return
 */
 function isPath(unvisited, end, start) {
-  console.log('pathfinder');
 
   let counter = 0;
   let countedCells = [];
 
   let match = false;
   let next = true;
-  // let notFound = true;
 
   while (match === false && next === true) {
 
-    /*
-        ideally these should not be here but they are linked to 
-        i.e. those set to infinity or counted elsewhere with a higher value
-    */
-
     let uncountedItems = unvisited.filter((obj => (obj.counter > counter) ));
-    // console.log('uncountedItems', uncountedItems);
     if(uncountedItems.length === 0) {
       next = false;
     }
     //queue is array object where counter = counter 
     let matchedItems = _store.grid.filter((obj => (obj.counter === counter) ));
-      // console.log('matchedItems', matchedItems);
 
-    if (matchedItems.length > 1) {
-      console.log('matched items more than one');
-      console.log('matchedItems', matchedItems);
-    }
+    // if (matchedItems.length > 1) {
+    //   console.log('matched items more than one');
+    //   console.log('matchedItems', matchedItems);
+    // }
 
     if(matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
 
-      matchedItems.forEach(function(matchCell, i) {
+      matchedItems.forEach(function(matchCell) {
         //iterate through start array
         //only one item
-        start.forEach(function(startCell, s) {
+        start.forEach(function(startCell) {
 
-          uncountedItems.forEach(function(element, j) {
+          uncountedItems.forEach(function(element) {
+
             if(checkTop(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
@@ -162,7 +148,6 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            //right
             if(checkRight(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
@@ -171,7 +156,6 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            //bottom
             if(checkBottom(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
@@ -180,7 +164,6 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            //left
             if(checkLeft(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
@@ -193,124 +176,23 @@ function isPath(unvisited, end, start) {
         })
     })
 
-    // console.log('queue', queue);
     counter = counter + 1;
 
-   }
+    }
 
   }
 
   if (match === true ) {
     return true;
   }
+
 }
 
-function pathFinder(unvisited, end, start) {
- 
-  console.log('pathfinder');
-  if (isPath(unvisited, end, start)) {
-    console.log('ready to find sharoertest path!!')
-  }  
-  // let counter = 0;
-  // let countedCells = [];
-  // console.log('countedCells', countedCells);
+function shortestPath(counted, end, start) {
 
-  // let match = false;
-  // let next = true;
-  // let notFound = true;
-
-  // while (match === false && next === true) {
-
-  //   /*
-  //       ideally these should not be here but they are linked to 
-  //       i.e. those set to infinity or counted elsewhere with a higher value
-  //   */
-
-  //   let uncountedItems = unvisited.filter((obj => (obj.counter > counter) ));
-  //   // console.log('uncountedItems', uncountedItems);
-  //   if(uncountedItems.length === 0) {
-  //     next = false;
-  //   }
-  //   //queue is array object where counter = counter 
-  //   let matchedItems = _store.grid.filter((obj => (obj.counter === counter) ));
-  //     // console.log('matchedItems', matchedItems);
-
-  //   if (matchedItems.length > 1) {
-  //     console.log('matched items more than one');
-  //     console.log('matchedItems', matchedItems);
-  //   }
-
-  //   if(matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
-
-  //     matchedItems.forEach(function(matchCell, i) {
-  //       //iterate through start array
-  //       //only one item
-  //       start.forEach(function(startCell, s) {
-
-  //         uncountedItems.forEach(function(element, j) {
-  //           if(checkTop(element.x, element.y, matchCell.x, matchCell.y)) {
-  //             element.counter = counter + 1;
-  //             countedCells.push(element);
-  //             if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-  //               match = true;
-  //             }
-  //           }
-
-  //           //right
-  //           if(checkRight(element.x, element.y, matchCell.x, matchCell.y)) {
-  //             element.counter = counter + 1;
-  //             countedCells.push(element);
-  //             if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-  //               match = true;
-  //             }
-  //           }
-
-  //           //bottom
-  //           if(checkBottom(element.x, element.y, matchCell.x, matchCell.y)) {
-  //             element.counter = counter + 1;
-  //             countedCells.push(element);
-  //             if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-  //               match = true;
-  //             }
-  //           }
-
-  //           //left
-  //           if(checkLeft(element.x, element.y, matchCell.x, matchCell.y)) {
-  //             element.counter = counter + 1;
-  //             countedCells.push(element);
-  //             if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-  //               match = true;
-  //             }
-  //           }
-
-  //         })
-  //       })
-  //   })
-
-  //   // console.log('queue', queue);
-  //   counter = counter + 1;
-
-  //  }
-
-  // }
-
-  // test();
-
-   // console.log('countedCells list of all visited cells after been counted', countedCells);
-
-
-  // console.log('notFound', notFound);
-  // console.log('counter', counter);
-  // console.log('match', match);
-
-  // let recursion = true;
-
-  // console.log('start', start);
-  let countedCells = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end") ));
-  console.log('countedCells', countedCells);
-  /// get max value of counter in data
   let counter = 0;
-  countedCells.forEach(function(count) {
+
+  counted.forEach(function(count) {
     if(count.counter > counter) {
       counter = count.counter;
     }
@@ -319,154 +201,135 @@ function pathFinder(unvisited, end, start) {
   start[0].counter = counter + 1;
 
   //Now, start at S (7) and go to the nearby cell with the lowest number (unchecked cells cannot be moved to). The path traced is (1,3,7) -> (1,4,6) -> (1,5,5) -> (1,6,4) -> (1,7,3) -> (1,8,2) -> (2,8,1) -> (3,8,0). In the event that two numbers are equally low (for example, if S was at (2,5)), pick a random direction – the lengths are the same. The algorithm is now complete.
-  let match = true;
-  let neighbours = [];
 
-  // run in neighbours is 0 i.e. only on first start complete and match === true
-  if(match === true) {
+  let shortestPath = [];
 
-    while (counter > 0) {
+  while (counter > 0) {
 
-      if (neighbours.length === 0 && start.length !== 0 && countedCells.length !== 0) {
-       //iterate through start array - should only be one 
-        start.forEach(function(startCell, s) {
+    if (shortestPath.length === 0 && start.length !== 0 && counted.length !== 0) {
 
-          countedCells.forEach(function(item, i){
-             // top
-            if(checkTop(item.x, item.y, startCell.x, startCell.y)) {
-              if(item.counter === counter) {
-                console.log('top push countedCells');
-                neighbours.push(item);
-              }
+      start.forEach(function(startCell, s) {
+
+        counted.forEach(function(item, i){
+           // top
+          if(checkTop(item.x, item.y, startCell.x, startCell.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
             }
-            //right
-            if(checkRight(item.x, item.y, startCell.x, startCell.y)) {
-              if(item.counter === counter) {
-                console.log('right push countedCells');
-                neighbours.push(item);
-              }
-            }
-            //bottom
-            if(checkBottom(item.x, item.y, startCell.x, startCell.y)) {
-              if(item.counter === counter) {
-                console.log('bottom push countedCells');
-                neighbours.push(item);
-              }
-            }
-            //left
-            if(checkLeft(item.x, item.y, startCell.x, startCell.y)) {
-              if(item.counter === counter) {
-                console.log('left push countedCells');
-                neighbours.push(item);
-              }
-            }
-
-          })
-        })
-      }
-
-      console.log('neighbours after start reversal', neighbours);
-
-      let lowestNumber = Infinity;
-      //get neighboure
-
-      //  for each neighbour take the loweset count ...
-      if(neighbours.length !== 0){
-        // console.log('gt 1 !');
-        neighbours.forEach(function(cell, c){
-          if (cell.counter < lowestNumber) {
-            // console.log('cell.counter', cell.counter);
-            lowestNumber = cell.counter;
           }
-        })
-      }
-
-      console.log('lowestNumber afer iterating though neighbours', lowestNumber);
-
-      // container for lowest items
-      let nextLowest = [];
-      if(neighbours.length !== 0){
-        //take item with least count ....
-        neighbours.forEach(function(cell, c) {
-          if (cell.counter === lowestNumber) {
-            console.log('shortest cell push inside', c);
-            nextLowest.push(cell);
+          //right
+          if(checkRight(item.x, item.y, startCell.x, startCell.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
           }
+          //bottom
+          if(checkBottom(item.x, item.y, startCell.x, startCell.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+          //left
+          if(checkLeft(item.x, item.y, startCell.x, startCell.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+
         })
-      }
+      })
+    }
 
-      if(nextLowest.length > 1) {
-        console.log('nextLowest bigger than one ', nextLowest);
-      }
-      if (nextLowest.length !==0 && countedCells.length !==0) {
+    let lowestNumber = Infinity;
+    // get neighboure - for each neighbour take the lowest count ...
+    if(shortestPath.length !== 0){
+      shortestPath.forEach(function(cell, c){
+        if (cell.counter < lowestNumber) {
+          lowestNumber = cell.counter;
+        }
+      })
+    }
 
-        countedCells.forEach(function(item){
+    // container for lowest items
+    let nextLowest = [];
+    if(shortestPath.length !== 0){
+      //take item with least count ....
+      shortestPath.forEach(function(cell, c) {
+        if (cell.counter === lowestNumber) {
+          nextLowest.push(cell);
+        }
+      })
+    }
 
-          nextLowest.forEach(function(nextItem){
-            // top
-            if(checkTop(item.x, item.y, nextItem.x, nextItem.y)) {
-              if(item.counter === counter) {
-                // console.log('top tempZ push');
-                // console.log('item countedCells push', item);
-                neighbours.push(item);
-              }
-            }
-            //left
-            if(checkLeft(item.x, item.y, nextItem.x, nextItem.y)) {
-              if(item.counter === counter) {
-                // console.log('right countedCells push');
-                neighbours.push(item);
-              }
-            }
-            //bottom
-            if(checkBottom(item.x, item.y, nextItem.x, nextItem.y)) {
-              if(item.counter === counter) {
-                // console.log('bottom countedCells push');
-                neighbours.push(item);
-              }
-            }
-            //right
-            if(checkRight(item.x, item.y, nextItem.x, nextItem.y)) {
-              if(item.counter === counter) {
-                // console.log('left countedCells push');
-                neighbours.push(item);
-              }
-            }
+    if(nextLowest.length > 1) {
+      console.log('nextLowest more than one ', nextLowest);
+    }
+    if(nextLowest.length !==0 && counted.length !==0) {
 
-          })
+      counted.forEach(function(item){
+
+        nextLowest.forEach(function(nextItem){
+          // top
+          if(checkTop(item.x, item.y, nextItem.x, nextItem.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+          //right
+          if(checkRight(item.x, item.y, nextItem.x, nextItem.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+          //bottom
+          if(checkBottom(item.x, item.y, nextItem.x, nextItem.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+          //left
+          if(checkLeft(item.x, item.y, nextItem.x, nextItem.y)) {
+            if(item.counter === counter) {
+              shortestPath.push(item);
+            }
+          }
+
         })
+      })
 
+    }
+
+    counter = counter - 1;
+
+  }
+
+  if(counter === 0 && shortestPath.length !== 0 ) {
+    shortestPath.forEach(function(cell) {
+      if(cell.counter === 1 ) {
+        console.log("Paint Shortest Path");
+        clearPath();
+        connectPath(shortestPath);
       }
+    })
+  }
 
-      // from neighboure 
-      console.log('lowestNumber after', lowestNumber);
+  if (counter === 0 ) {
+    return true;
+  }
 
-      counter = counter - 1;
-        // counter = counter - 1;
-      console.log('counter 2', counter);
+}
 
-      // console.log('shortestPath', shortestPath);
-      console.log('neighbours',neighbours);
-      if(counter === 0 && neighbours.length !== 0 ) {
-            //console.log("BINGO start");
+function pathFinder(unvisited, end, start) {
 
-        neighbours.forEach(function(neigh, n) {
-          if(neigh.counter === 1 ) {
-            console.log('neigh', neigh);
+  if (isPath(unvisited, end, start)) {
 
-            console.log("BINGO");
-            clearPath();
-            connectPath(neighbours)
-          } 
-         //  else {
-         //    console.log('neigh', neigh.counter);
-         //    console.log('Better luck next time');
-         // //   connectPath(neighbours)
-         //  }
-        })
-      }
+    let countedCells = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end") ));
+
+    if (shortestPath(countedCells, end, start)) {
+      console.log('Found shortest path!!')
     }
   }
+
 }
 
 /*
@@ -475,6 +338,7 @@ function pathFinder(unvisited, end, start) {
   if match calls pathFinder function passing, @unvisited cells, @start and @end
 */
 function isEndVisited(unvisited, end, start) {
+  // console.log('isEndVisited');
   //need some way of checking if path exits before as we have no way of knowing
   if(end.length > 1) {
     console.log('multiple ends!!');
@@ -486,20 +350,19 @@ function isEndVisited(unvisited, end, start) {
 
       unvisited.forEach(function(element, i) {
         // top
-        if(element.x === enditem.x && element.y -1 === enditem.y ) {
+        if(checkTop(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
          // right
-        if(element.x - 1 === enditem.x && element.y === enditem.y) {
+        if(checkRight(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
         // bottom
-        if(element.x === enditem.x && element.y +1 === enditem.y) {
+        if(checkBottom(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
-         // left
-        if(element.x + 1 === enditem.x && element.y === enditem.y) {
-          // console.log('end left here')
+        // left
+        if(checkLeft(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
 

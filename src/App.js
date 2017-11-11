@@ -15,13 +15,10 @@ export default class App extends Component {
           Try to connect the start and end blocks that are coloured green.
         </p>
         <p>
-          You can input any value for either columns or rows in the grid. The default is 10 x 10.
+          You can input any value up to 20 for either columns or rows in the grid. The default is 10 x 10.
         </p>
         <p>
-          To generate the grid, hit the <i>generate</i> button.
-        </p>
-        <p>
-          Starting from the left try to connect the start and end cells by clicking or touching on adjacent horizontal or vertical cells.
+          To generate the grid, hit the <i>generate</i> button. Good luck!
         </p>
         <GridWidget />
       </div>
