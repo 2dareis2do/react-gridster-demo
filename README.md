@@ -14,9 +14,6 @@ Starting from the left try to connect the start and end cells by clicking or tou
 
 ## Todo
 1. Styling around states of buttons
-2. Fix issue where you can only click on adjacent cells - otherwise breaks path
-3. Implement support for multiple paths
-4. Of available paths - implement priority queue to iterate through available paths heap and show the shortest available routes using A* alogorith or similar
 
 ## Demo
 
