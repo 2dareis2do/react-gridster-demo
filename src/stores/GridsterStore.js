@@ -39,9 +39,9 @@ function clearPath() {
   _store.grid.forEach((element, i) => {
     if (element.path === "connected"){
       element.path = null;
-      element.distance = Infinity;
+      // element.distance = Infinity;
       element.counter = Infinity;
-      element.visited = "unvisited";
+      // element.visited = "unvisited";
     }
   })
 }
@@ -111,6 +111,7 @@ function checkStart(cellX, cellY, startX, startY) {
   i.e. 0, 0+1, 0+1+1, 0+1+1+1 
   until count item is next to end
   || if not available i.e cell end is not end, and none other available return
+  // needs to fail if next item is not one more htan previous!!!
 */
 function isPath(unvisited, end, start) {
 
@@ -123,17 +124,19 @@ function isPath(unvisited, end, start) {
   while (match === false && next === true) {
 
     let uncountedItems = unvisited.filter((obj => (obj.counter > counter) ));
+
     if(uncountedItems.length === 0) {
       next = false;
     }
     //queue is array object where counter = counter 
     let matchedItems = _store.grid.filter((obj => (obj.counter === counter) ));
-
     // if (matchedItems.length > 1) {
     //   console.log('matched items more than one');
     //   console.log('matchedItems', matchedItems);
     // }
-
+    if(matchedItems.length === 0) {
+      next = false;
+    }
     if(matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
 
       matchedItems.forEach(function(matchCell) {
@@ -200,7 +203,8 @@ function shortestPath(counted, end, start) {
       counter = count.counter;
     }
   })
-  // i.e. if count - 8 from end make start.counter = 9
+
+  //  if count = 8 from end make start.counter = 9
   start[0].counter = counter + 1;
 
   //Now, start at S (7) and go to the nearby cell with the lowest number (unchecked cells cannot be moved to). The path traced is (1,3,7) -> (1,4,6) -> (1,5,5) -> (1,6,4) -> (1,7,3) -> (1,8,2) -> (2,8,1) -> (3,8,0). In the event that two numbers are equally low (for example, if S was at (2,5)), pick a random direction – the lengths are the same. The algorithm is now complete.
@@ -211,7 +215,7 @@ function shortestPath(counted, end, start) {
 
     if (shortestPath.length === 0 && start.length !== 0 && counted.length !== 0) {
 
-      start.forEach(function(startCell, s) {
+      start.forEach(function(startCell) {
 
         counted.forEach(function(item, i){
            // top
@@ -425,7 +429,7 @@ AppDispatcher.register((payload) => {
       let newCells = [];
 
       for(let i=0;i<total;i++){
-        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'distance': Infinity, 'counter': Infinity, 'visited': "unvisited"});
+        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'counter': Infinity});
       }
 
       _store.grid = newCells;
@@ -452,17 +456,6 @@ AppDispatcher.register((payload) => {
 
       let start = _store.grid.filter((obj => (obj.clicked === "start") ));
 
-      // is end visited implies that end need to be clicked , that is the trigger for calculating and rendering the path
-
-      // currenly a bug that means if you click on an item that is clicked, and has path === connected and it is not the end or start path goes into Infinite Loop
-
-      // if start and end is still connected , does not mean there is a path
-      // hovevr ther cannot be a path if start and end is not connected
-
-      // path only starts if end is visited - 
-      // fd match will call path finder
-      // if path finder completes i.e reaches end cell 
-      // shortest path is then alled
       isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
@@ -507,8 +500,8 @@ AppDispatcher.register((payload) => {
       let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
 
       _store.grid[startIndex].clicked = "start";
-      _store.grid[startIndex].distance = {'x':0, 'y': 0};
-      _store.grid[startIndex].visited = "current";
+      // _store.grid[startIndex].distance = {'x':0, 'y': 0};
+      // _store.grid[startIndex].visited = "current";
 
       GridsterStore.emit(CHANGE_EVENT);
     break;
