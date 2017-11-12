@@ -11,8 +11,9 @@ import { generateStart } from '../actions/GridsterActions.js';
 import { generateEnd } from '../actions/GridsterActions.js';
 
 const spanStyle = {
-  marginLeft: '1rem',
-  marginRight: '1rem'
+  marginRight: '1rem',
+  marginTop: '1.2rem',
+  float: 'left'
 }
 
 function inputValidation(value) {
@@ -89,15 +90,15 @@ export default class GridWidget extends Component {
         <div className="inner-container">
           <form>
             <Input
-              name="Columns"
-              value={this.state.columns}
-              onchange={this._onChangeCols}
-            />
-            <span style={spanStyle}> x </span>
-            <Input
               name="Rows"
               value={this.state.rows}
               onchange={this._onChangeRows}
+            />
+            <span style={spanStyle}> x </span>
+            <Input
+              name="Columns"
+              value={this.state.columns}
+              onchange={this._onChangeCols}
             />
 
             <Button text="Generate" onclick={this._onGenerateGrid}/>

@@ -6,15 +6,33 @@ const inputStyle = {
   borderRadius: '.4rem',
   border: 'solid 1px #ccc',
   padding: '.4rem',
-  maxWidth: '3rem'
+  maxWidth: '4rem',
+  float: 'left',
+  margin: '0',
+  clear: 'left',
+  fontSize: '.8rem'
+}
+
+const labelStyle = {
+  fontSize: '.8rem',
+  display: 'inline-block',
+  float: 'left',
+  marginRight: '1rem'
+}
+
+const spanStyle = {
+  display: 'inline-block',
+  float: 'left'
 }
 
 export default class Input extends Component {
 
   render() {
     return (
-      <label>
+      <label style={labelStyle}>
+        <span style={spanStyle}>
         {this.props.name}
+        </span>
         <input style={inputStyle}
           type="number"
           name={this.props.name}

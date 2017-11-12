@@ -449,7 +449,6 @@ AppDispatcher.register((payload) => {
       }
 
       // on click check for connection
-      //clearPath();
       let unVisited = _store.grid.filter((obj => (obj.clicked === "true") ));
 
       let end = _store.grid.filter((obj => (obj.clicked === "end") ));
@@ -500,8 +499,6 @@ AppDispatcher.register((payload) => {
       let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
 
       _store.grid[startIndex].clicked = "start";
-      // _store.grid[startIndex].distance = {'x':0, 'y': 0};
-      // _store.grid[startIndex].visited = "current";
 
       GridsterStore.emit(CHANGE_EVENT);
     break;
