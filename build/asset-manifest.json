@@ -1,7 +1,14 @@
 {
-  "main.css": "static/css/main.44fcf3d0.css",
-  "main.css.map": "static/css/main.44fcf3d0.css.map",
-  "main.js": "static/js/main.a3c2a68e.js",
-  "main.js.map": "static/js/main.a3c2a68e.js.map",
-  "static/media/Gridster-Logo.png": "static/media/Gridster-Logo.68bbd17b.png"
+  "files": {
+    "main.css": "/static/css/main.1b4abfb0.css",
+    "main.js": "/static/js/main.809deb4d.js",
+    "static/media/Gridster-Logo.png": "/static/media/Gridster-Logo.65a570747b2e923ed153.png",
+    "index.html": "/index.html",
+    "main.1b4abfb0.css.map": "/static/css/main.1b4abfb0.css.map",
+    "main.809deb4d.js.map": "/static/js/main.809deb4d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1b4abfb0.css",
+    "static/js/main.809deb4d.js"
+  ]
 }
